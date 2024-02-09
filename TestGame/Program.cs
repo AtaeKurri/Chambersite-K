@@ -11,12 +11,15 @@ namespace TestGame
     {
         static void Main(string[] args)
         {
-            using MainProcess game = new MainProcess();
+            using MainProcess game = new MainProcess(true);
             game.AddView<MainMenu>();
+            game.AddView<GameUI>();
+            game.AddView<TestStage>();
             game.Run();
         }
     }
 
+    [ViewName("Main Menu")]
     [ViewType(ViewType.Menu)]
     public class MainMenu : View
     {
@@ -27,17 +30,28 @@ namespace TestGame
         }
     }
 
+    [ViewName("UI")]
+    [ViewType(ViewType.Interface)]
+    public class GameUI : View
+    {
+
+    }
+
+    [ViewName("Stage Test")]
+    [ViewType(ViewType.Stage)]
+    public class TestStage : View
+    {
+
+    }
+
     public class TestObject : GameObject
     {
         public override void Init()
         {
+            Scale = new Vector2(0.3f, 0.3f);
+            Velocity = 0f;
             Image = Resource.FindResource<Texture2D>("Tial", (MainMenu)Parent);
             base.Init();
-        }
-
-        public override void Render()
-        {
-            base.Render();
         }
     }
 }

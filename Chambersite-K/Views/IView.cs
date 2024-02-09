@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Chambersite_K.GameObjects;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace Chambersite_K.Views
 {
-    public interface IView
+    public interface IView : IParentable
     {
+        public string InternalName { get; set; }
+        public long Id { get; set; }
         public ViewType vType { get; }
         public ViewStatus ViewStatus { get; set; }
         public bool WasInitialized { get; }

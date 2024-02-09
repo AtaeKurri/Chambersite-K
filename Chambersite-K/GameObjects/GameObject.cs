@@ -25,12 +25,33 @@ namespace Chambersite_K.GameObjects
 
         public Vector2 Position { get; set; } = Vector2.Zero;
         public float Velocity { get; set; } = 0.0f;
-        public Vector2 Direction { get; set; } = Vector2.Zero;
+        public Vector2 Direction { get; private set; } = Vector2.Zero;
         public float Acceleration { get; set; } = 0.0f;
         public Vector2 AccelerationDir { get; set; } = Vector2.Zero;
 
         public Resource? Image { get; set; } = null;
+
+        /// <summary>
+        /// Differs from <see cref="Rotation"/> as this property is used for actual movement.
+        /// </summary>
+        public float Angle { get; set; } = 0.0f; // In radians
+        public float AngleDegrees
+        {
+            get { return Angle * (180.0f / MathF.PI); }
+            set { Angle = value * (MathF.PI * 180.0f); }
+        }
+
+        /// <summary>
+        /// Differs from <see cref="Angle"/> as this property is used for image manipulation. Will sync
+        /// with <see cref="Angle"/> is <see cref="SyncRotation"/> is set to <c>true</c>.
+        /// </summary>
         public float Rotation { get; set; } = 0.0f; // In radians
+        public float RotationDegrees
+        {
+            get { return Rotation * (180.0f / MathF.PI); }
+            set { Rotation = value * (MathF.PI * 180.0f); }
+        }
+        public bool SyncRotation { get; set; } = false;
         public Vector2 Scale { get; set; } = Vector2.One;
 
         public object Parent { get; set; } = null;
@@ -50,6 +71,8 @@ namespace Chambersite_K.GameObjects
         {
             if (Status == GameObjectStatus.Active)
             {
+                Direction = new Vector2(MathF.Cos(Angle), MathF.Sin(Angle));
+                Position += Direction * Velocity;
                 Timer++;
             }
         }

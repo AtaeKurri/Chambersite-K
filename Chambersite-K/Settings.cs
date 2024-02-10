@@ -22,6 +22,8 @@ namespace Chambersite_K
         public string FilePath { get; set; } = "userdata/";
         public SettingData SettingData { get; set; } = new SettingData();
 
+        public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public Settings()
         {
 
@@ -33,6 +35,7 @@ namespace Chambersite_K
             GAME._graphics.PreferredBackBufferWidth = (int)SettingData.WindowSize.X;
             GAME._graphics.PreferredBackBufferHeight = (int)SettingData.WindowSize.Y;
             GAME._graphics.ApplyChanges();
+            Logger.Info("Settings Loaded and applied.");
         }
 
         public Matrix GetViewportScale()

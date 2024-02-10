@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Chambersite_K.GameObjects
 {
@@ -77,7 +78,11 @@ namespace Chambersite_K.GameObjects
         public delegate void DestroyEventHandler();
         public event DestroyEventHandler OnDestroy;
 
-        public GameObject() { }
+        public GameObject()
+        {
+            InternalNameAttribute goNameAttr = (InternalNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InternalNameAttribute));
+            InternalName = (goNameAttr != null) ? goNameAttr.InternalName : "NullName";
+        }
 
         ~GameObject()
         {
@@ -85,6 +90,11 @@ namespace Chambersite_K.GameObjects
                 try { ParentView.LocalObjectPool.ObjectPool.Remove(this); } catch (Exception) { }
             else
                 try { GAME.GlobalObjectPool.ObjectPool.Remove(this); } catch (Exception) { }
+        }
+
+        public override string ToString()
+        {
+            return $"\"{InternalName}\" ({GetType()})";
         }
 
         public virtual void Init()

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace Chambersite_K.Views
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class ViewNameAttribute : Attribute
+    public class InternalNameAttribute : Attribute
     {
-        public readonly string ViewName;
+        public readonly string InternalName;
 
-        public ViewNameAttribute(string viewName)
+        public InternalNameAttribute(string internalName)
         {
-            this.ViewName = viewName;
+            this.InternalName = internalName;
         }
     }
 }

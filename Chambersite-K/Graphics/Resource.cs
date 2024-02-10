@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Assimp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Chambersite_K.Graphics
 {
@@ -16,11 +18,14 @@ namespace Chambersite_K.Graphics
         public object Res { get; set; }
         public string Path { get; set; }
 
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public Resource(string name, object res, string path)
         {
             Name = name;
             Res = res;
             Path = path;
+            Logger.Info("Resource '{0}' ({1}) loaded.", Name, Path);
         }
 
         public override string ToString()
@@ -43,14 +48,57 @@ namespace Chambersite_K.Graphics
                 {
                     // TODO: Ajouter tous les types pouvant être lus par un FileStream.
                     case Type _ when type == typeof(Texture2D):
-                        return new Resource(resourceName, (T)Convert.ChangeType(_loadFromStream(fs), typeof(T)), filePath);
+                        return new Resource(resourceName, (T)Convert.ChangeType(_loadTexture2DFromStream(fs), typeof(T)), filePath);
+                    case Type _ when type == typeof(Model):
+                        return new Resource(resourceName, (T)Convert.ChangeType(_LoadModelFromFile(filePath), typeof(T)), filePath);
                     default:
                         throw new ArgumentException("The type provided is not a valid resource type.");
                 }
             }
         }
 
-        private static Texture2D _loadFromStream(FileStream fs) => Texture2D.FromStream(GAME._graphics.GraphicsDevice, fs);
+        private static Texture2D _loadTexture2DFromStream(FileStream fs) => Texture2D.FromStream(GAME._graphics.GraphicsDevice, fs);
+
+        private static Model _LoadModelFromFile(string fileName)
+        {
+            AssimpContext importer = new AssimpContext();
+            Scene scene = importer.ImportFile(fileName, PostProcessSteps.Triangulate | PostProcessSteps.FlipUVs);
+
+            List<ModelMesh> meshes = new List<ModelMesh>();
+            foreach (var mesh in scene.Meshes)
+            {
+                VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[mesh.VertexCount];
+                int[] indices = new int[mesh.FaceCount * 3];
+
+                for (int i = 0; i < mesh.VertexCount; i++)
+                {
+                    Vector3 position = new Vector3(mesh.Vertices[i].X, mesh.Vertices[i].Y, mesh.Vertices[i].Z);
+                    Vector3 normal = new Vector3(mesh.Normals[i].X, mesh.Normals[i].Y, mesh.Normals[i].Z);
+                    Vector2 textureCoordinate = mesh.HasTextureCoords(0) ? new Vector2(mesh.TextureCoordinateChannels[0][i].X, mesh.TextureCoordinateChannels[0][i].Y) : Vector2.Zero;
+
+                    vertices[i] = new VertexPositionNormalTexture(position, normal, textureCoordinate);
+                }
+
+                for (int i = 0; i < mesh.FaceCount; i++)
+                {
+                    Face face = mesh.Faces[i];
+                    indices[i * 3] = face.Indices[0];
+                    indices[i * 3 + 1] = face.Indices[1];
+                    indices[i * 3 + 2] = face.Indices[2];
+                }
+
+                ModelMeshPart meshPart = new ModelMeshPart();
+                meshPart.VertexBuffer = new VertexBuffer(GAME.GraphicsDevice, typeof(VertexPositionNormalTexture), mesh.VertexCount, BufferUsage.WriteOnly);
+                meshPart.VertexBuffer.SetData(vertices);
+                meshPart.IndexBuffer = new IndexBuffer(GAME.GraphicsDevice, IndexElementSize.ThirtyTwoBits, mesh.FaceCount * 3, BufferUsage.WriteOnly);
+                meshPart.IndexBuffer.SetData(indices);
+
+                ModelMesh modelMesh = new ModelMesh(GAME.GraphicsDevice, new List<ModelMeshPart> { meshPart });
+                meshes.Add(modelMesh);
+            }
+
+            return new Model(GAME.GraphicsDevice, null, meshes);
+        }
 
         /// <summary>
         /// Load a resource into the Global Resource pool (will never go out of scope).<br/>

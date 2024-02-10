@@ -19,7 +19,7 @@ namespace TestGame
         }
     }
 
-    [ViewName("Main Menu")]
+    [InternalName("Main Menu")]
     [ViewType(ViewType.Menu)]
     public class MainMenu : View
     {
@@ -28,10 +28,11 @@ namespace TestGame
             LoadLocalResource<Texture2D>("Tial", "Tial.png");
             //Resource.LoadGlobalResource<Texture2D>("Tial", "Tial.png");
             CreateGameObject<TestObject>();
+            base.Init();
         }
     }
 
-    [ViewName("UI")]
+    [InternalName("UI")]
     [ViewType(ViewType.Interface)]
     public class GameUI : View
     {
@@ -43,13 +44,14 @@ namespace TestGame
         }
     }
 
-    [ViewName("Stage Test")]
+    [InternalName("Stage Test")]
     [ViewType(ViewType.Stage)]
     public class TestStage : View
     {
 
     }
 
+    [InternalName("Tial Test")]
     public class TestObject : GameObject
     {
         public int TestProperty { get; set; } = 0;
@@ -64,11 +66,12 @@ namespace TestGame
 
         public override void Frame()
         {
-            RotationDegrees += 1.0f;
+            //RotationDegrees += 1.0f;
             base.Frame();
         }
     }
 
+    [InternalName("Main Interface")]
     public class UIBG : GameObject
     {
         public override void Init()

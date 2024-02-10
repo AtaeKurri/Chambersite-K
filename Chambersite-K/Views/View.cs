@@ -37,6 +37,7 @@ namespace Chambersite_K.Views
         public long Id { get; set; } = -1;
         public ViewStatus ViewStatus { get; set; } = ViewStatus.Active;
         public bool WasInitialized { get; private set; } = false;
+        public long Timer { get; set; } = 0;
 
         /// <summary>
         /// Stores all the resources loaded from type view scope. Access it directly to render standalone images.<br/>
@@ -52,14 +53,16 @@ namespace Chambersite_K.Views
         public IView ParentView { get; set; }
         public List<GameObject> Children { get; set; } = new List<GameObject>();
 
+        public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public View()
         {
             ParentView = this;
             ViewTypeAttribute viewTypeAttr = (ViewTypeAttribute)Attribute.GetCustomAttribute(GetType(), typeof(ViewTypeAttribute));
             vType = (viewTypeAttr != null) ? viewTypeAttr.ViewType : ViewType.Menu;
 
-            ViewNameAttribute viewNameAttr = (ViewNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(ViewNameAttribute));
-            InternalName = (viewNameAttr != null) ? viewNameAttr.ViewName : "NullName";
+            InternalNameAttribute viewNameAttr = (InternalNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InternalNameAttribute));
+            InternalName = (viewNameAttr != null) ? viewNameAttr.InternalName : "NullName";
         }
 
         ~View()
@@ -67,9 +70,15 @@ namespace Chambersite_K.Views
             GAME.ActiveViews.Remove(this);
         }
 
+        public override string ToString()
+        {
+            return $"\"{InternalName}\" ({GetType()})";
+        }
+
         public virtual void Init()
         {
             WasInitialized = true;
+            Logger.Debug("View {0} Initialized.", InternalName);
         }
 
         public virtual void Frame()
@@ -80,6 +89,7 @@ namespace Chambersite_K.Views
             {
                 gameObject.Frame();
             }
+            Timer++;
         }
         public virtual void Render()
         {

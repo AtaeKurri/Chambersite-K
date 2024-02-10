@@ -18,6 +18,7 @@ namespace Chambersite_K
         public SpriteBatch _spriteBatch;
         private ImGuiRenderer GUIRenderer;
         public KeyboardState currentKeyboardState;
+        public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Resources and Objects
         public Settings Settings { get; set; } = new Settings();
@@ -52,6 +53,7 @@ namespace Chambersite_K
 
         protected override void Initialize()
         {
+            Logger.Debug("MainProcess initialization start.");
             Settings.LoadSettings();
             GUIRenderer = new ImGuiRenderer(this);
             GUIRenderer.RebuildFontAtlas();
@@ -63,10 +65,13 @@ namespace Chambersite_K
 
             base.Initialize();
             _IsInitialized = true;
+            Logger.Debug("MainProcess was initialized correctly.");
             foreach (IView view in ActiveViews)
             {
                 if (!view.WasInitialized)
+                {
                     view.Init();
+                }
             }
         }
 

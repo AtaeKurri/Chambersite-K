@@ -97,8 +97,7 @@ namespace Chambersite_K.Graphics
         /// <param name="position">Position of the image on the screen</param>
         public void Render(Vector2 position)
         {   
-            if (Res is Texture2D)
-                GAME._spriteBatch.Draw((Texture2D)Res, position, Color.White);
+            Render(position, 0f, Vector2.One, Color.White, SpriteEffects.None);
         }
 
         /// <summary>
@@ -112,6 +111,14 @@ namespace Chambersite_K.Graphics
             Render(position, rotation, scale, Color.White, SpriteEffects.None);
         }
 
+        /// <summary>
+        /// Renders a <see cref="Texture2D"/>. Doesn't do anything if the Resource is not a <see cref="Texture2D"/>.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        /// <param name="scale"></param>
+        /// <param name="color"></param>
+        /// <param name="spriteEffects"></param>
         public void Render(Vector2 position, float rotation, Vector2 scale, Color color, SpriteEffects spriteEffects=SpriteEffects.None)
         {
             if (Res is Texture2D)
@@ -121,10 +128,13 @@ namespace Chambersite_K.Graphics
             }
         }
 
-        public void RenderRect(Rectangle position, Rectangle originRect, float rotation, Vector2 origin)
+        public void RenderRect(Rectangle position, Rectangle originRect, float rotation)
         {
             if (Res is Texture2D)
+            {
+                Vector2 origin = new Vector2((Res as Texture2D).Width / 2, (Res as Texture2D).Height / 2);
                 GAME._spriteBatch.Draw((Texture2D)Res, position, originRect, Color.White, rotation, origin, SpriteEffects.None, 0);
+            }
         }
     }
 

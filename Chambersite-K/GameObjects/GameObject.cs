@@ -23,6 +23,10 @@ namespace Chambersite_K.GameObjects
         public string InternalName { get; set; }
         public long Id { get; set; } = -1;
         public GameObjectStatus Status { get; set; } = GameObjectStatus.Active;
+        /// <summary>
+        /// Checks if this <see cref="GameObject"/> instance is local to a <see cref="View"/> or a Global object.
+        /// </summary>
+        public bool IsLocalToView { get; set; } = false;
         public long Timer { get; set; } = 0;
 
         public Vector2 Position { get; set; } = Vector2.Zero;
@@ -74,6 +78,14 @@ namespace Chambersite_K.GameObjects
         public event DestroyEventHandler OnDestroy;
 
         public GameObject() { }
+
+        ~GameObject()
+        {
+            if (IsLocalToView)
+                try { ParentView.LocalObjectPool.ObjectPool.Remove(this); } catch (Exception) { }
+            else
+                try { GAME.GlobalObjectPool.ObjectPool.Remove(this); } catch (Exception) { }
+        }
 
         public virtual void Init()
         {

@@ -10,22 +10,24 @@ namespace Chambersite_K.GameObjects
     public sealed class GameObjectPool
     {
         public List<GameObject> ObjectPool { get; set; } = new List<GameObject>();
-        private long nextID = 0; 
+        private long nextID = 0;
+        private bool IsLocalPool = false;
 
-        public GameObjectPool()
+        public GameObjectPool(bool isLocal)
         {
-            ObjectPool = new List<GameObject>();
+            IsLocalPool = isLocal;
         }
 
         public GameObject CreateGameObject<T>(IParentable parent, IView parentView, params object[] objectParams)
         {
             GameObject go = (GameObject)Activator.CreateInstance(typeof(T), args:objectParams);
             go.Id = nextID;
-            ObjectPool.Add(go);
-            nextID++;
+            go.IsLocalToView = IsLocalPool;
             go.Parent = parent;
             go.ParentView = parentView;
+            ObjectPool.Add(go);
             go.Init();
+            nextID++;
             return go;
         }
 

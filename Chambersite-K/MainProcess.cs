@@ -23,7 +23,7 @@ namespace Chambersite_K
         public Settings Settings { get; set; } = new Settings();
 
         public List<Resource> GlobalResource { get; set; } = new List<Resource>();
-        public GameObjectPool GlobalObjectPool { get; set; } = new GameObjectPool();
+        public GameObjectPool GlobalObjectPool { get; set; } = new GameObjectPool(false);
         internal IView? LoadingScreen { get; set; }
         internal List<IView> ActiveViews { get; set; } = new List<IView>();
         private long nextViewId { get; set; } = 0;

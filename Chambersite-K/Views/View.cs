@@ -43,7 +43,7 @@ namespace Chambersite_K.Views
         /// See <see cref="ResourceExtensions.FindResource{T}(List{Resource}, string)"/> to find resources inside this List more easily.
         /// </summary>
         public List<Resource> LocalResources { get; set; } = new List<Resource>();
-        public GameObjectPool LocalObjectPool { get; set; } = new GameObjectPool();
+        public GameObjectPool LocalObjectPool { get; set; } = new GameObjectPool(true);
 
         /// <summary>
         /// The Parent of a View is always the instanced <see cref="MainProcess"/> object.
@@ -60,6 +60,11 @@ namespace Chambersite_K.Views
 
             ViewNameAttribute viewNameAttr = (ViewNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(ViewNameAttribute));
             InternalName = (viewNameAttr != null) ? viewNameAttr.ViewName : "NullName";
+        }
+
+        ~View()
+        {
+            GAME.ActiveViews.Remove(this);
         }
 
         public virtual void Init()

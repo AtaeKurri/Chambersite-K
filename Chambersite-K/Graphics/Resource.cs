@@ -14,17 +14,24 @@ namespace Chambersite_K.Graphics
     {
         public string Name { get; set; }
         public object Res { get; set; }
+        public string Path { get; set; }
 
-        public Resource(string name, object res)
+        public Resource(string name, object res, string path)
         {
             Name = name;
             Res = res;
+            Path = path;
+        }
+
+        public override string ToString()
+        {
+            return $"\"{Name}\" ({Res.GetType()})";
         }
 
         // TODO: Implémenter un check pour savoir si une resource du même nom (et type) existe, si oui, throw une Exception.
         public static Resource Load<T>(string resourceName, string filePath)
         {
-            filePath = $"{AppDomain.CurrentDomain.BaseDirectory}\\{filePath}";
+            filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException($"The file provided doesn't exist: '{filePath}'");
@@ -36,7 +43,7 @@ namespace Chambersite_K.Graphics
                 {
                     // TODO: Ajouter tous les types pouvant être lus par un FileStream.
                     case Type _ when type == typeof(Texture2D):
-                        return new Resource(resourceName, (T)Convert.ChangeType(_loadFromStream(fs), typeof(T)));
+                        return new Resource(resourceName, (T)Convert.ChangeType(_loadFromStream(fs), typeof(T)), filePath);
                     default:
                         throw new ArgumentException("The type provided is not a valid resource type.");
                 }
@@ -102,14 +109,16 @@ namespace Chambersite_K.Graphics
         /// <param name="scale">Size multiplier. A scale of Vector2(1, 1) is the default behaviour</param>
         public void Render(Vector2 position, float rotation, Vector2 scale)
         {
-            if (Res is Texture2D)
-                GAME._spriteBatch.Draw((Texture2D)Res, position, null, Color.White, rotation, Vector2.Zero, scale, SpriteEffects.None, 0);
+            Render(position, rotation, scale, Color.White, SpriteEffects.None);
         }
 
         public void Render(Vector2 position, float rotation, Vector2 scale, Color color, SpriteEffects spriteEffects=SpriteEffects.None)
         {
             if (Res is Texture2D)
-                GAME._spriteBatch.Draw((Texture2D)Res, position, null, color, rotation, Vector2.Zero, scale, spriteEffects, 0);
+            {
+                Vector2 origin = new Vector2((Res as Texture2D).Width/2, (Res as Texture2D).Height / 2);
+                GAME._spriteBatch.Draw((Texture2D)Res, position, null, color, rotation, origin, scale, spriteEffects, 0);
+            }
         }
 
         public void RenderRect(Rectangle position, Rectangle originRect, float rotation, Vector2 origin)

@@ -1,4 +1,5 @@
 ﻿using Chambersite_K.Graphics;
+using Chambersite_K.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -19,6 +20,7 @@ namespace Chambersite_K.GameObjects
     // GameObjects should never try to load resources from themselves
     public abstract class GameObject : IGameObject, IParentable
     {
+        public string InternalName { get; set; }
         public long Id { get; set; } = -1;
         public GameObjectStatus Status { get; set; } = GameObjectStatus.Active;
         public long Timer { get; set; } = 0;
@@ -29,7 +31,12 @@ namespace Chambersite_K.GameObjects
         public float Acceleration { get; set; } = 0.0f;
         public Vector2 AccelerationDir { get; set; } = Vector2.Zero;
 
-        public Resource? Image { get; set; } = null;
+        /// <summary>
+        /// The name of the base image of this <see cref="GameObject"/>. Will try to find
+        /// the images in both the local and global resource pool, will display nothing if the image isn't found.
+        /// </summary>
+        public string? Image { get; set; } = null;
+        public Resource? ImageTexture { get; private set; } = null;
 
         /// <summary>
         /// Differs from <see cref="Rotation"/> as this property is used for actual movement.
@@ -37,8 +44,8 @@ namespace Chambersite_K.GameObjects
         public float Angle { get; set; } = 0.0f; // In radians
         public float AngleDegrees
         {
-            get { return Angle * (180.0f / MathF.PI); }
-            set { Angle = value * (MathF.PI * 180.0f); }
+            get { return RadToDegNormalized(Angle); }
+            set { Angle = DegToRadNormalized(value); }
         }
 
         /// <summary>
@@ -48,14 +55,20 @@ namespace Chambersite_K.GameObjects
         public float Rotation { get; set; } = 0.0f; // In radians
         public float RotationDegrees
         {
-            get { return Rotation * (180.0f / MathF.PI); }
-            set { Rotation = value * (MathF.PI * 180.0f); }
+            get { return RadToDegNormalized(Rotation); }
+            set { Rotation = DegToRadNormalized(value); }
         }
-        public bool SyncRotation { get; set; } = false;
+        /// <summary>
+        /// Syncs <see cref="Rotation"/> with <see cref="Angle"/>'s value if set to true.
+        /// </summary>
+        public bool SyncRotation { get; set; } = true;
         public Vector2 Scale { get; set; } = Vector2.One;
 
         public object Parent { get; set; } = null;
+        public IView ParentView { get; set; }
         public List<GameObject> Children { get; set; } = new List<GameObject>();
+
+        public bool CheckCollision { get; set; } = true;
 
         public delegate void DestroyEventHandler();
         public event DestroyEventHandler OnDestroy;
@@ -64,7 +77,8 @@ namespace Chambersite_K.GameObjects
 
         public virtual void Init()
         {
-
+            try { ImageTexture = Resource.FindResource<Texture2D>(Image, ParentView); }
+            catch (KeyNotFoundException) { } // The ImageTexture wasn't set properly. This is normal for some objects so ignore.
         }
 
         public virtual void Frame()
@@ -79,7 +93,7 @@ namespace Chambersite_K.GameObjects
 
         public virtual void Render()
         {
-            Image?.Render(Position, Rotation, Scale);
+            ImageTexture?.Render(Position, Rotation, Scale);
         }
 
         public virtual void Delete()
@@ -98,9 +112,33 @@ namespace Chambersite_K.GameObjects
             OnDestroy();
         }
 
+        public GameObject CreateGameObject<T>(bool globalObject = false, string image = null)
+        {
+            GameObject go;
+            if (globalObject)
+                go = GAME.GlobalObjectPool.CreateGameObject<T>(this, ParentView);
+            else
+                go = ParentView.LocalObjectPool.CreateGameObject<T>(this, ParentView);
+            AddChild(go);
+            return go;
+        }
+
         public void AddChild(GameObject child)
         {
             Children.Add(child);
+        }
+
+        private float RadToDegNormalized(float rad)
+        {
+            return rad * (180.0f / MathF.PI);
+        }
+
+        private float DegToRadNormalized(float deg)
+        {
+            float orientation = deg % 360;
+            if (orientation < 0) orientation += 360;
+            orientation = orientation * (MathF.PI / 180.0f);
+            return orientation;
         }
     }
 }

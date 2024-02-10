@@ -25,7 +25,7 @@ namespace Chambersite_K.Views
         Hidden
     }
 
-    public abstract class View : IView, IResourceHolder
+    public abstract class View : IView
     {
         public string InternalName { get; set; }
 
@@ -49,10 +49,12 @@ namespace Chambersite_K.Views
         /// The Parent of a View is always the instanced <see cref="MainProcess"/> object.
         /// </summary>
         public object Parent { get; set; } = GAME; // TODO: Allow for other view to be the parent (for nesting scenes.)
+        public IView ParentView { get; set; }
         public List<GameObject> Children { get; set; } = new List<GameObject>();
 
         public View()
         {
+            ParentView = this;
             ViewTypeAttribute viewTypeAttr = (ViewTypeAttribute)Attribute.GetCustomAttribute(GetType(), typeof(ViewTypeAttribute));
             vType = (viewTypeAttr != null) ? viewTypeAttr.ViewType : ViewType.Menu;
 
@@ -98,9 +100,9 @@ namespace Chambersite_K.Views
         {
             GameObject go;
             if (globalObject)
-                go = GAME.GlobalObjectPool.CreateGameObject<T>(this);
+                go = GAME.GlobalObjectPool.CreateGameObject<T>(this, this);
             else
-                go = LocalObjectPool.CreateGameObject<T>(this);
+                go = LocalObjectPool.CreateGameObject<T>(this, this);
             AddChild(go);
             return go;
         }

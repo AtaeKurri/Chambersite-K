@@ -17,7 +17,9 @@ namespace Chambersite_K
         public GraphicsDeviceManager _graphics;
         public SpriteBatch _spriteBatch;
         private ImGuiRenderer GUIRenderer;
+        public KeyboardState currentKeyboardState;
 
+        #region Resources and Objects
         public Settings Settings { get; set; } = new Settings();
 
         public List<Resource> GlobalResource { get; set; } = new List<Resource>();
@@ -25,10 +27,17 @@ namespace Chambersite_K
         internal IView? LoadingScreen { get; set; }
         internal List<IView> ActiveViews { get; set; } = new List<IView>();
         private long nextViewId { get; set; } = 0;
-
+        #endregion
+        #region ImGui Windows
         public bool AllowImGui = false;
         private bool IsImGuiActive = true;
-        private int ImGuiSelectedViewIndex = 0;
+
+        /// <summary>
+        /// Change this this to determine which key toggles the ImGUI display.
+        /// </summary>
+        public Keys ToggleImGUI = Keys.F3;
+        private GUIViewAndObjectList GUI_ViewAndObjectList = new GUIViewAndObjectList();
+        #endregion
 
         public MainProcess(bool allowImGui)
         {
@@ -68,9 +77,15 @@ namespace Chambersite_K
         {
             if (!_IsInitialized)
                 return;
-            foreach (IView view in ActiveViews)
-                view.Frame();
+            currentKeyboardState = Keyboard.GetState();
 
+            if (currentKeyboardState.IsKeyPressedOnce(ToggleImGUI))
+                IsImGuiActive = !IsImGuiActive;
+
+            foreach (IView view in ActiveViews)
+                if (view.ViewStatus == ViewStatus.Active) view.Frame();
+
+            currentKeyboardState.UpdatePreviousKeyboardState();
             base.Update(gameTime);
         }
 
@@ -82,45 +97,24 @@ namespace Chambersite_K
 
             _spriteBatch.Begin();
 
-            //_spriteBatch.Draw(testImg, new Vector2(0, 0), Color.White);
             foreach (IView view in ActiveViews)
-                view.Render();
+                if (view.ViewStatus != ViewStatus.Hidden) view.Render();
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
 
-            if (!AllowImGui) return;
+            if (!AllowImGui || !IsImGuiActive) return;
 
             GUIRenderer.BeforeLayout(gameTime);
 
-            ImGui.SetNextWindowSize(new System.Numerics.Vector2(500, 500), ImGuiCond.Always);
-            ImGui.Begin("Object Inspector");
 
-            ImGui.Combo("Views", ref ImGuiSelectedViewIndex, GetViewsNameArray(ActiveViews), ActiveViews.Count);
-            if (ImGuiSelectedViewIndex >= 0 && ImGuiSelectedViewIndex < ActiveViews.Count)
-            {
-                ImGui.Text("Children: ");
-                foreach (GameObject obj in ActiveViews[ImGuiSelectedViewIndex].Children)
-                {
-                    ImGui.BulletText($"{obj} (Id: {obj.Id} ; Status: {obj.Status})");
-                }
-            }
-
-            ImGui.End();
+            GUI_ViewAndObjectList.Draw();
 
             GUIRenderer.AfterLayout();
         }
 
-        public string[] GetViewsNameArray(List<IView> views)
-        {
-            string[] viewNames = new string[views.Count];
-            for (int i = 0; i < views.Count; i++)
-            {
-                viewNames[i] = $"{views[i].InternalName} (Id: {views[i].Id} ; Type: {views[i].vType})";
-            }
-            return viewNames;
-        }
+        
 
         /// <summary>
         /// Creates a new instance of <typeparamref name="T"/>.<br/>
@@ -167,5 +161,7 @@ namespace Chambersite_K
                 view.Init();
             return view;
         }
+
+        public KeyboardState GetKeyboardState() => currentKeyboardState;
     }
 }

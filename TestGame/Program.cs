@@ -25,7 +25,8 @@ namespace TestGame
     {
         public override void Init()
         {
-            Resource.LoadGlobalResource<Texture2D>("Tial", "Tial.png");
+            LoadLocalResource<Texture2D>("Tial", "Tial.png");
+            //Resource.LoadGlobalResource<Texture2D>("Tial", "Tial.png");
             CreateGameObject<TestObject>();
         }
     }
@@ -46,11 +47,28 @@ namespace TestGame
 
     public class TestObject : GameObject
     {
+        public int TestProperty { get; set; } = 0;
         public override void Init()
         {
+            Position = new Vector2(1600/2, 900/2);
             Scale = new Vector2(0.3f, 0.3f);
             Velocity = 0f;
-            Image = Resource.FindResource<Texture2D>("Tial", (MainMenu)Parent);
+            Image = "Tial";
+            CreateGameObject<TestObject2>();
+            base.Init();
+        }
+
+        public override void Frame()
+        {
+            RotationDegrees += 1.0f;
+            base.Frame();
+        }
+    }
+
+    public class TestObject2 : GameObject
+    {
+        public override void Init()
+        {
             base.Init();
         }
     }

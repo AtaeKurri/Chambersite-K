@@ -13,6 +13,7 @@ namespace Chambersite_K
 
         public bool IsFullscreen { get; set; } = false;
         public Vector2 WindowSize { get; set; } = new Vector2(1600, 900);
+        public Vector2 ViewportSize { get; set; } = new Vector2(853, 480);
         public bool IsMouseVisible { get; set; } = true;
     }
 
@@ -32,6 +33,14 @@ namespace Chambersite_K
             GAME._graphics.PreferredBackBufferWidth = (int)SettingData.WindowSize.X;
             GAME._graphics.PreferredBackBufferHeight = (int)SettingData.WindowSize.Y;
             GAME._graphics.ApplyChanges();
+        }
+
+        public Matrix GetViewportScale()
+        {
+            float scaleX = SettingData.WindowSize.X / SettingData.ViewportSize.X;
+            float scaleY = SettingData.WindowSize.Y / SettingData.ViewportSize.Y;
+            Matrix scaleMatrix = Matrix.CreateScale(scaleX, scaleY, 1.0f);
+            return scaleMatrix;
         }
     }
 }

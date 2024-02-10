@@ -35,7 +35,12 @@ namespace TestGame
     [ViewType(ViewType.Interface)]
     public class GameUI : View
     {
-
+        public override void Init()
+        {
+            LoadLocalResource<Texture2D>("UI", "ui_bg.png");
+            CreateGameObject<UIBG>();
+            base.Init();
+        }
     }
 
     [ViewName("Stage Test")]
@@ -50,11 +55,10 @@ namespace TestGame
         public int TestProperty { get; set; } = 0;
         public override void Init()
         {
-            Position = new Vector2(1600/2, 900/2);
+            Position = new Vector2(853/2, 480/2);
             Scale = new Vector2(0.3f, 0.3f);
             Velocity = 0f;
             Image = "Tial";
-            CreateGameObject<TestObject2>();
             base.Init();
         }
 
@@ -65,10 +69,12 @@ namespace TestGame
         }
     }
 
-    public class TestObject2 : GameObject
+    public class UIBG : GameObject
     {
         public override void Init()
         {
+            Image = "UI";
+            Position = new Vector2(853 / 2, 480 / 2);
             base.Init();
         }
     }

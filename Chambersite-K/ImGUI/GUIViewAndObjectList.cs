@@ -46,7 +46,7 @@ namespace Chambersite_K.ImGUI
 
                     foreach (Tuple<string, List<Resource>> container in resourceHolders)
                     {
-                        if (ImGui.CollapsingHeader($"{container.Item1}"))
+                        if (ImGui.CollapsingHeader($"{container.Item1} Pool"))
                         {
                             DisplayResourcePool(container.Item2);
                         }

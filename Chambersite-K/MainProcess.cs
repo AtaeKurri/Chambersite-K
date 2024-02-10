@@ -59,6 +59,8 @@ namespace Chambersite_K
             // TODO: Si y'a un LoadingScreen mis au lancement du jeu, lancer la View correspondante, sinon lancer le menu quand toutes les
             // globalResources ont été chargés.
 
+            Window.ClientSizeChanged += UpdateViewport;
+
             base.Initialize();
             _IsInitialized = true;
             foreach (IView view in ActiveViews)
@@ -95,7 +97,7 @@ namespace Chambersite_K
                 return;
             GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(transformMatrix: Settings.GetViewportScale());
 
             foreach (IView view in ActiveViews)
                 if (view.ViewStatus != ViewStatus.Hidden) view.Render();
@@ -114,7 +116,25 @@ namespace Chambersite_K
             GUIRenderer.AfterLayout();
         }
 
-        
+        private void UpdateViewport(object sender, EventArgs e)
+        {
+            Viewport viewport = GraphicsDevice.Viewport;
+            float aspectRatio = Settings.SettingData.ViewportSize.X / Settings.SettingData.ViewportSize.Y;
+            int width = viewport.Width;
+            int height = (int)(width / aspectRatio + 0.5f);
+
+            if (height > viewport.Height)
+            {
+                height = viewport.Height;
+                width = (int)(height * aspectRatio + 0.5f);
+            }
+
+            int x = (viewport.Width / 2) - (width / 2);
+            int y = (viewport.Height / 2) - (height / 2);
+
+            GraphicsDevice.Viewport = new Viewport(x, y, width, height);
+        }
+
 
         /// <summary>
         /// Creates a new instance of <typeparamref name="T"/>.<br/>

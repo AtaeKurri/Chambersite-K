@@ -10,10 +10,14 @@
 
   <ItemGroup>
     <None Remove="Tial.png" />
+    <None Remove="ui_bg.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Tial.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ui_bg.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

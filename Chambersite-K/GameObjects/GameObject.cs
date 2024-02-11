@@ -29,6 +29,7 @@ namespace Chambersite_K.GameObjects
         /// </summary>
         public bool IsLocalToView { get; set; } = false;
         public long Timer { get; set; } = 0;
+        public int RenderOrder { get; set; } = -999_999_999;
 
         public Vector2 Position { get; set; } = Vector2.Zero;
         public float Velocity { get; set; } = 0.0f;
@@ -82,6 +83,9 @@ namespace Chambersite_K.GameObjects
         {
             InternalNameAttribute goNameAttr = (InternalNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InternalNameAttribute));
             InternalName = (goNameAttr != null) ? goNameAttr.InternalName : "NullName";
+
+            RenderOrderAttribute renderOrderAttr = (RenderOrderAttribute)Attribute.GetCustomAttribute(GetType(), typeof(RenderOrderAttribute));
+            RenderOrder = (renderOrderAttr != null) ? renderOrderAttr.RenderOrder : -999_999_999;
         }
 
         ~GameObject()
@@ -134,14 +138,31 @@ namespace Chambersite_K.GameObjects
             OnDestroy();
         }
 
+        /// <summary>
+        /// Creates a <see cref="GameObject"/> and adds it as a Child of this <see cref="IView"/>.<br/>
+        /// If <paramref name="globalObject"/> is set to <c>true</c>, this object will not render.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="GameObject"/> type to instanciate.</typeparam>
+        /// <param name="globalObject">Is this meant to be a global object?</param>
+        /// <param name="image">Optional base image to render this object.</param>
+        /// <returns>The instanciated <typeparamref name="T"/> <see cref="GameObject"/>.</returns>
         public GameObject CreateGameObject<T>(bool globalObject = false, string image = null)
         {
             GameObject go;
             if (globalObject)
-                go = GAME.GlobalObjectPool.CreateGameObject<T>(this, ParentView);
+                go = AddGameObjectToList<T>(GAME.GlobalObjectPool);
             else
-                go = ParentView.LocalObjectPool.CreateGameObject<T>(this, ParentView);
+                go = AddGameObjectToList<T>(ParentView.LocalObjectPool);
             AddChild(go);
+            return go;
+        }
+
+        private GameObject AddGameObjectToList<T>(GameObjectPool pool)
+        {
+            GameObject go = pool.CreateGameObject<T>(this, ParentView);
+            if (go.RenderOrder == -999_999_999)
+                go.RenderOrder = pool.GetAllObjectCount() - 1;
+            pool.ObjectPool.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
             return go;
         }
 

@@ -69,10 +69,11 @@ namespace Chambersite_K.ImGUI
 
         private void DisplayView(IView view)
         {
-            ImGui.Text($"Type: {view.vType}");
+            ImGui.Text($"Type: {view.GetType().Name}");
+            ImGui.Text($"View Type: {view.vType}");
             ImGui.Text($"Status: {view.ViewStatus}");
             ImGui.Text($"Timer: {view.Timer}");
-            if (ImGui.TreeNode("More details..."))
+            if (ImGui.TreeNode($"More details for {view.InternalName}..."))
             {
                 var properties = from p in view.GetType().GetProperties() select p;
                 foreach (var property in properties)
@@ -112,7 +113,7 @@ namespace Chambersite_K.ImGUI
                     ImGui.Text($"Position: {child.Position}");
                     ImGui.Text($"Timer: {child.Timer}");
                     ImGui.Text($"Angle & Rotation: {child.Angle} | {child.Rotation}");
-                    if (ImGui.TreeNode("More details..."))
+                    if (ImGui.TreeNode($"More details for {child.InternalName}..."))
                     {
                         var properties = from p in child.GetType().GetProperties() select p;
                         foreach (var property in properties)
@@ -141,7 +142,7 @@ namespace Chambersite_K.ImGUI
                 {
                     ImGui.Text($"Indentifier: {resource.Name}");
                     ImGui.Text($"File Path: {resource.Path}");
-                    ImGui.Text($"Internal Type: {resource.Res.GetType()}");
+                    ImGui.Text($"Internal Type: {resource.Res.GetType().Name}");
                     ImGui.TreePop();
                 }
             }

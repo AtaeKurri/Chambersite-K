@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Chambersite_K.Views
 {
-    public enum ViewType
+    public enum ViewType // Must be in order since MainProcess.Render will iterate through these in order.
     {
-        Menu, // Can have multiple menus.
-        Background, // Can only have a single Background at once. Will always render on the back on everything.
-        Stage, // Can only have a single Stage view active at once. Will render in the middle.
+        Background, // Can only have a single Background at once.
+        Stage, // Can only have a single Stage view active at once.
+        Interface, // Can have multiple interfaces.
+        Menu, // Can have multiple menus. Renders on top of interfaces since this is also meant for the pause menus too.
         LoadingScreen, // Can only have one per MainProcess instance.
-        Interface, // Can have multiple interfaces. Will always render on top of everything. (TODO:Decide later for the rendering order)
     }
 
     public enum ViewStatus
@@ -38,6 +38,7 @@ namespace Chambersite_K.Views
         public ViewStatus ViewStatus { get; set; } = ViewStatus.Active;
         public bool WasInitialized { get; private set; } = false;
         public long Timer { get; set; } = 0;
+        public int RenderOrder { get; set; } = -999_999_999;
 
         /// <summary>
         /// Stores all the resources loaded from type view scope. Access it directly to render standalone images.<br/>
@@ -63,6 +64,9 @@ namespace Chambersite_K.Views
 
             InternalNameAttribute viewNameAttr = (InternalNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InternalNameAttribute));
             InternalName = (viewNameAttr != null) ? viewNameAttr.InternalName : "NullName";
+
+            RenderOrderAttribute renderOrderAttr = (RenderOrderAttribute)Attribute.GetCustomAttribute(GetType(), typeof(RenderOrderAttribute));
+            RenderOrder = (renderOrderAttr != null) ? renderOrderAttr.RenderOrder : -999_999_999;
         }
 
         ~View()
@@ -85,7 +89,7 @@ namespace Chambersite_K.Views
         {
             if (ViewStatus == ViewStatus.Hidden || ViewStatus == ViewStatus.Paused)
                 return;
-            foreach (GameObject gameObject in LocalObjectPool.ObjectPool)
+            foreach (GameObject gameObject in LocalObjectPool)
             {
                 gameObject.Frame();
             }
@@ -95,7 +99,7 @@ namespace Chambersite_K.Views
         {
             if (ViewStatus == ViewStatus.Hidden)
                 return;
-            foreach (GameObject gameObject in LocalObjectPool.ObjectPool)
+            foreach (GameObject gameObject in LocalObjectPool)
             {
                 gameObject.Render();
             }
@@ -111,14 +115,31 @@ namespace Chambersite_K.Views
 
         public List<Resource> GetGlobalResources() => GAME.GlobalResource;
 
+        /// <summary>
+        /// Creates a <see cref="GameObject"/> and adds it as a Child of this <see cref="IView"/>.<br/>
+        /// If <paramref name="globalObject"/> is set to <c>true</c>, this object will not render.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="GameObject"/> type to instanciate.</typeparam>
+        /// <param name="globalObject">Is this meant to be a global object?</param>
+        /// <param name="image">Optional base image to render this object.</param>
+        /// <returns>The instanciated <typeparamref name="T"/> <see cref="GameObject"/>.</returns>
         public GameObject CreateGameObject<T>(bool globalObject = false, string image = null)
         {
             GameObject go;
             if (globalObject)
-                go = GAME.GlobalObjectPool.CreateGameObject<T>(this, this);
+                go = AddGameObjectToList<T>(GAME.GlobalObjectPool);
             else
-                go = LocalObjectPool.CreateGameObject<T>(this, this);
+                go = AddGameObjectToList<T>(LocalObjectPool);
             AddChild(go);
+            return go;
+        }
+
+        private GameObject AddGameObjectToList<T>(GameObjectPool pool)
+        {
+            GameObject go = pool.CreateGameObject<T>(this, this);
+            if (go.RenderOrder == -999_999_999)
+                go.RenderOrder = pool.GetAllObjectCount() - 1;
+            pool.ObjectPool.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
             return go;
         }
 

@@ -91,11 +91,17 @@ namespace Chambersite_K
 
             foreach (IView view in ActiveViews)
                 if (view.ViewStatus == ViewStatus.Active) view.Frame();
+            foreach (GameObject gameObject in GlobalObjectPool) // Only do Frame() on those object, DON'T render them.
+                gameObject.Frame();
 
             currentKeyboardState.UpdatePreviousKeyboardState();
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// This methods skips the rendering of global objects, because they're meant to be used as information holder.
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
             if (!_IsInitialized)
@@ -104,8 +110,7 @@ namespace Chambersite_K
 
             _spriteBatch.Begin(transformMatrix: Settings.GetViewportScale());
 
-            foreach (IView view in ActiveViews)
-                if (view.ViewStatus != ViewStatus.Hidden) view.Render();
+            RenderViewsByType();
 
             _spriteBatch.End();
 
@@ -119,6 +124,20 @@ namespace Chambersite_K
             GUI_ViewAndObjectList.Draw();
 
             GUIRenderer.AfterLayout();
+        }
+
+        private void RenderViewsByType()
+        {
+            ViewType[] types = (ViewType[])Enum.GetValues(typeof(ViewType));
+            Logger.Debug("New render call");
+            foreach (ViewType type in types)
+            {
+                foreach (IView view in ActiveViews.FindAll(x => x.vType == type))
+                {
+                    if (view.ViewStatus != ViewStatus.Hidden) view.Render();
+                    Logger.Debug("Rending {0}", view.InternalName);
+                }
+            }
         }
 
         private void UpdateViewport(object sender, EventArgs e)
@@ -161,8 +180,11 @@ namespace Chambersite_K
 
             view.Id = nextViewId;
             ActiveViews.Add(view);
+            if (view.RenderOrder == -999_999_999)
+                view.RenderOrder = ActiveViews.Count-1;
             if (_IsInitialized)
                 view.Init();
+            ActiveViews.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
             nextViewId++;
             return view;
         }

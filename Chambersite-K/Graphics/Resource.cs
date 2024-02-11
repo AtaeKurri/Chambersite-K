@@ -25,12 +25,12 @@ namespace Chambersite_K.Graphics
             Name = name;
             Res = res;
             Path = path;
-            Logger.Info("Resource '{0}' ({1}) loaded.", Name, Path);
+            Logger.Info("Resource of type {0}: '{1}' ({2}) loaded.", Res.GetType().Name, Name, Path);
         }
 
         public override string ToString()
         {
-            return $"\"{Name}\" ({Res.GetType()})";
+            return $"\"{Name}\" ({Res.GetType().Name})";
         }
 
         // TODO: Implémenter un check pour savoir si une resource du même nom (et type) existe, si oui, throw une Exception.

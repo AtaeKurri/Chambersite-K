@@ -12,16 +12,15 @@ namespace TestGame
         static void Main(string[] args)
         {
             using MainProcess game = new MainProcess(true);
-            game.AddView<MainMenu>();
+            game.AddView<MainStage>();
             game.AddView<GameUI>();
-            game.AddView<TestStage>();
             game.Run();
         }
     }
 
-    [InternalName("Main Menu")]
-    [ViewType(ViewType.Menu)]
-    public class MainMenu : View
+    [InternalName("Main Stage")]
+    [ViewType(ViewType.Stage)]
+    public class MainStage : View
     {
         public override void Init()
         {
@@ -44,13 +43,6 @@ namespace TestGame
         }
     }
 
-    [InternalName("Stage Test")]
-    [ViewType(ViewType.Stage)]
-    public class TestStage : View
-    {
-
-    }
-
     [InternalName("Tial Test")]
     public class TestObject : GameObject
     {
@@ -59,6 +51,7 @@ namespace TestGame
         {
             Position = new Vector2(853/2, 480/2);
             Scale = new Vector2(0.3f, 0.3f);
+            RotationDegrees = 90f;
             Velocity = 0f;
             Image = "Tial";
             base.Init();

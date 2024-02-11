@@ -18,6 +18,7 @@ namespace Chambersite_K.Views
         public GameObjectPool LocalObjectPool { get; set; }
         public bool WasInitialized { get; }
         public long Timer { get; set; }
+        public int RenderOrder { get; set; }
         public void Init();
         public void Frame();
         public void Render();

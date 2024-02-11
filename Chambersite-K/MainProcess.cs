@@ -129,14 +129,10 @@ namespace Chambersite_K
         private void RenderViewsByType()
         {
             ViewType[] types = (ViewType[])Enum.GetValues(typeof(ViewType));
-            Logger.Debug("New render call");
             foreach (ViewType type in types)
             {
                 foreach (IView view in ActiveViews.FindAll(x => x.vType == type))
-                {
                     if (view.ViewStatus != ViewStatus.Hidden) view.Render();
-                    Logger.Debug("Rending {0}", view.InternalName);
-                }
             }
         }
 

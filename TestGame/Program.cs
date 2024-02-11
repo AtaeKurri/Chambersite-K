@@ -31,7 +31,7 @@ namespace TestGame
         }
     }
 
-    [InternalName("UI")]
+    //[InternalName("UI")]
     [ViewType(ViewType.Interface)]
     public class GameUI : View
     {

@@ -60,10 +60,10 @@ namespace Chambersite_K.Views
         {
             ParentView = this;
             ViewTypeAttribute viewTypeAttr = (ViewTypeAttribute)Attribute.GetCustomAttribute(GetType(), typeof(ViewTypeAttribute));
-            vType = (viewTypeAttr != null) ? viewTypeAttr.ViewType : ViewType.Menu;
+            vType = (viewTypeAttr != null) ? viewTypeAttr.ViewType : ViewType.Stage;
 
             InternalNameAttribute viewNameAttr = (InternalNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InternalNameAttribute));
-            InternalName = (viewNameAttr != null) ? viewNameAttr.InternalName : "NullName";
+            InternalName = (viewNameAttr != null) ? viewNameAttr.InternalName : $"{GetType().Name}";
 
             RenderOrderAttribute renderOrderAttr = (RenderOrderAttribute)Attribute.GetCustomAttribute(GetType(), typeof(RenderOrderAttribute));
             RenderOrder = (renderOrderAttr != null) ? renderOrderAttr.RenderOrder : -999_999_999;

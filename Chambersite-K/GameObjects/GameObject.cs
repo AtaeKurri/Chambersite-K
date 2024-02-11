@@ -82,7 +82,7 @@ namespace Chambersite_K.GameObjects
         public GameObject()
         {
             InternalNameAttribute goNameAttr = (InternalNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InternalNameAttribute));
-            InternalName = (goNameAttr != null) ? goNameAttr.InternalName : "NullName";
+            InternalName = (goNameAttr != null) ? goNameAttr.InternalName : $"{GetType().Name}";
 
             RenderOrderAttribute renderOrderAttr = (RenderOrderAttribute)Attribute.GetCustomAttribute(GetType(), typeof(RenderOrderAttribute));
             RenderOrder = (renderOrderAttr != null) ? renderOrderAttr.RenderOrder : -999_999_999;

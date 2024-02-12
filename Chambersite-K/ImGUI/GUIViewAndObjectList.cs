@@ -159,7 +159,7 @@ namespace Chambersite_K.ImGUI
 
         private void DisplayWorld3D(World3D world)
         {
-            if (ImGui.TreeNode($"World3D:"))//: {world}"))
+            if (ImGui.TreeNode($"World3D"))//: {world}"))
             {
                 ImGui.Text($"Fog Enabled: {world.FogSettings.EnableFog}");
                 ImGui.Text($"Fog Color: {world.FogSettings.FogColor}");

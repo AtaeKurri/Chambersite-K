@@ -14,10 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Tial.png">
+    <Content Include="Assets\Tial.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ui_bg.png">
+    <Content Include="Assets\ui_bg.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

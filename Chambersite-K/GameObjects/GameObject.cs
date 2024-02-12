@@ -22,7 +22,7 @@ namespace Chambersite_K.GameObjects
     public abstract class GameObject : IGameObject, IParentable
     {
         public string InternalName { get; set; }
-        public long Id { get; set; } = -1;
+        public Guid? Id { get; set; } = null;
         public GameObjectStatus Status { get; set; } = GameObjectStatus.Active;
         /// <summary>
         /// Checks if this <see cref="GameObject"/> instance is local to a <see cref="View"/> or a Global object.
@@ -98,13 +98,13 @@ namespace Chambersite_K.GameObjects
 
         public override string ToString()
         {
-            return $"\"{InternalName}\" ({GetType()})";
+            return $"\"{InternalName}\" ({GetType().Name}:{Id})";
         }
 
         public virtual void Init()
         {
             try { ImageTexture = Resource.FindResource<Texture2D>(Image, ParentView); }
-            catch (KeyNotFoundException) { } // The ImageTexture wasn't set properly. This is normal for some objects so ignore.
+            catch (KeyNotFoundException) { ImageTexture = null; } // The ImageTexture wasn't set properly. This is normal for some objects so ignore.
         }
 
         public virtual void Frame()

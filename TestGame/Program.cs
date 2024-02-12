@@ -2,6 +2,7 @@
 using Chambersite_K.GameObjects;
 using Chambersite_K.Graphics;
 using Chambersite_K.Views;
+using Chambersite_K.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -14,6 +15,7 @@ namespace TestGame
             using MainProcess game = new MainProcess(true);
             game.AddView<MainStage>();
             game.AddView<GameUI>();
+            game.AddView<TestBackground>();
             game.Run();
         }
     }
@@ -31,7 +33,7 @@ namespace TestGame
         }
     }
 
-    //[InternalName("UI")]
+    [InternalName("UI")]
     [ViewType(ViewType.Interface)]
     public class GameUI : View
     {
@@ -39,6 +41,18 @@ namespace TestGame
         {
             LoadLocalResource<Texture2D>("UI", "ui_bg.png");
             CreateGameObject<UIBG>();
+            base.Init();
+        }
+    }
+
+    [InternalName("Main Background")]
+    [ViewType(ViewType.Background)]
+    public class TestBackground : View
+    {
+        public World3D World { get; set; } = new World3D();
+
+        public override void Init()
+        {
             base.Init();
         }
     }

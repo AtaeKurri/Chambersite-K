@@ -34,7 +34,7 @@ namespace Chambersite_K.Views
         /// Is <see cref="ViewType.Menu"/> by default.
         /// </summary>
         public ViewType vType { get; private set; }
-        public long Id { get; set; } = -1;
+        public Guid? Id { get; set; } = null;
         public ViewStatus ViewStatus { get; set; } = ViewStatus.Active;
         public bool WasInitialized { get; private set; } = false;
         public long Timer { get; set; } = 0;
@@ -76,7 +76,7 @@ namespace Chambersite_K.Views
 
         public override string ToString()
         {
-            return $"\"{InternalName}\" ({GetType()})";
+            return $"\"{InternalName}\" ({GetType().Name}:{Id})";
         }
 
         public virtual void Init()

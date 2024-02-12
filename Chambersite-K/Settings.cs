@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,20 @@ namespace Chambersite_K
         public Vector2 WindowSize { get; set; } = new Vector2(1600, 900);
         public Vector2 ViewportSize { get; set; } = new Vector2(853, 480);
         public bool IsMouseVisible { get; set; } = true;
+        public Keybindings Keybindings { get; set; } = new Keybindings();
+    }
+
+    public struct Keybindings
+    {
+        public Keybindings() { }
+
+        public Keys Up { get; set; } = Keys.Up;
+        public Keys Down { get; set; } = Keys.Down;
+        public Keys Left { get; set; } = Keys.Left;
+        public Keys Right { get; set; } = Keys.Right;
+        public Keys Shoot { get; set; } = Keys.W;
+        public Keys Bomb { get; set; } = Keys.X;
+        public Keys Special { get; set; } = Keys.C;
     }
 
     public class Settings

@@ -51,6 +51,8 @@ namespace Chambersite_K.Graphics
                         return new Resource(resourceName, (T)Convert.ChangeType(_loadTexture2DFromStream(fs), typeof(T)), filePath);
                     case Type _ when type == typeof(Model):
                         return new Resource(resourceName, (T)Convert.ChangeType(_LoadModelFromFile(filePath), typeof(T)), filePath);
+                    case Type _ when type == typeof(TTFFont):
+                        return new Resource(resourceName, (T)Convert.ChangeType(new TTFFont(filePath), typeof(T)), filePath);
                     default:
                         throw new ArgumentException("The type provided is not a valid resource type.");
                 }

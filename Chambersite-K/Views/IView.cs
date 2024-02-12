@@ -12,7 +12,7 @@ namespace Chambersite_K.Views
     public interface IView : IParentable, IResourceHolder
     {
         public string InternalName { get; set; }
-        public long Id { get; set; }
+        public Guid? Id { get; set; }
         public ViewType vType { get; }
         public ViewStatus ViewStatus { get; set; }
         public GameObjectPool LocalObjectPool { get; set; }

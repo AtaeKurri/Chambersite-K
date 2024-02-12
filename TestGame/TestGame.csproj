@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Boleite\Boleite.csproj" />
     <ProjectReference Include="..\Chambersite-K\Chambersite_K.csproj" />
   </ItemGroup>
 

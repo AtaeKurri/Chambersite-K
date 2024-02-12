@@ -1,11 +1,13 @@
 ﻿using Chambersite_K.GameObjects;
 using Chambersite_K.Graphics;
 using Chambersite_K.Views;
+using Chambersite_K.World;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +25,7 @@ namespace Chambersite_K.ImGUI
                 {
                     foreach (IView view in GAME.ActiveViews)
                     {
-                        if (ImGui.CollapsingHeader($"{view.InternalName} | Id:{view.Id}"))
+                        if (ImGui.CollapsingHeader(view.ToString()))
                         {
                             DisplayView(view);
                         }
@@ -35,7 +37,7 @@ namespace Chambersite_K.ImGUI
                     List<Tuple<string, GameObjectPool>> goHolders = new List<Tuple<string, GameObjectPool>>
                     { new Tuple<string, GameObjectPool>("Global GameObjects", GAME.GlobalObjectPool) };
                     foreach (IView view in GAME.ActiveViews)
-                        goHolders.Add(new Tuple<string, GameObjectPool>($"{view.InternalName} | Id:{view.Id}", view.LocalObjectPool));
+                        goHolders.Add(new Tuple<string, GameObjectPool>(view.ToString(), view.LocalObjectPool));
                     foreach (Tuple<string, GameObjectPool> container in goHolders)
                     {
                         if (ImGui.CollapsingHeader($"{container.Item1}"))
@@ -50,7 +52,7 @@ namespace Chambersite_K.ImGUI
                     List<Tuple<string, List<Resource>>> resourceHolders = new List<Tuple<string, List<Resource>>>
                     { new Tuple<string, List<Resource>>("Global Pool", GAME.GlobalResource) };
                     foreach (IView view in GAME.ActiveViews)
-                        resourceHolders.Add(new Tuple<string, List<Resource>>($"{view.InternalName} | Id:{view.Id}", view.LocalResources));
+                        resourceHolders.Add(new Tuple<string, List<Resource>>(view.ToString(), view.LocalResources));
 
                     foreach (Tuple<string, List<Resource>> container in resourceHolders)
                     {
@@ -73,9 +75,16 @@ namespace Chambersite_K.ImGUI
             ImGui.Text($"View Type: {view.vType}");
             ImGui.Text($"Status: {view.ViewStatus}");
             ImGui.Text($"Timer: {view.Timer}");
+            PropertyInfo[] properties = view.GetType().GetProperties();
+            foreach (PropertyInfo prop in properties)
+            {
+                if (prop.PropertyType == typeof(World3D))
+                {
+                    DisplayWorld3D((World3D)prop.GetValue(view));
+                }
+            }
             if (ImGui.TreeNode($"More details for {view.InternalName}..."))
             {
-                var properties = from p in view.GetType().GetProperties() select p;
                 foreach (var property in properties)
                 {
                     var value = property.GetValue(view, null);
@@ -92,7 +101,7 @@ namespace Chambersite_K.ImGUI
             if (goPool.GetAllObjectCount() != 0)
             {
                 ImGui.Text($"Children: ({goPool.ObjectPool.Count})");
-                DisplayChildren(goPool.ObjectPool, 20);
+                DisplayViewChildren(goPool.ObjectPool, 20);
             }
         }
 
@@ -101,13 +110,13 @@ namespace Chambersite_K.ImGUI
         /// To avoid possible infinite calls, this functions has a max call depth of 20.
         /// </summary>
         /// <param name="obj"></param>
-        private void DisplayChildren(List<GameObject> Children, int _CallDepth)
+        private void DisplayViewChildren(List<GameObject> Children, int _CallDepth)
         {
             if (_CallDepth <= 0)
                 return;
             foreach (GameObject child in Children)
             {
-                if (ImGui.TreeNode($"{child} (Id:{child.Id})"))
+                if (ImGui.TreeNode(child.ToString()))
                 {
                     ImGui.Text($"Status: {child.Status}");
                     ImGui.Text($"Position: {child.Position}");
@@ -126,7 +135,7 @@ namespace Chambersite_K.ImGUI
                     if (child.Children.Count != 0)
                     {
                         ImGui.Text($"Children: ({child.Children.Count})");
-                        DisplayChildren(child.Children, _CallDepth-1);
+                        DisplayViewChildren(child.Children, _CallDepth-1);
                     }
                     ImGui.TreePop();
                 }
@@ -145,6 +154,16 @@ namespace Chambersite_K.ImGUI
                     ImGui.Text($"Internal Type: {resource.Res.GetType().Name}");
                     ImGui.TreePop();
                 }
+            }
+        }
+
+        private void DisplayWorld3D(World3D world)
+        {
+            if (ImGui.TreeNode($"World3D:"))//: {world}"))
+            {
+                ImGui.Text($"Fog Enabled: {world.FogSettings.EnableFog}");
+                ImGui.Text($"Fog Color: {world.FogSettings.FogColor}");
+                ImGui.TreePop();
             }
         }
     }

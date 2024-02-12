@@ -11,8 +11,8 @@ namespace Chambersite_K.GameObjects
     public sealed class GameObjectPool : IEnumerable<GameObject>
     {
         public List<GameObject> ObjectPool { get; set; } = new List<GameObject>();
-        private long nextID = 0;
         private bool IsLocalPool = false;
+        private HashSet<Guid> UsedGuids = new HashSet<Guid>();
 
         public GameObjectPool(bool isLocal)
         {
@@ -22,14 +22,24 @@ namespace Chambersite_K.GameObjects
         public GameObject CreateGameObject<T>(IParentable parent, IView parentView, params object[] objectParams)
         {
             GameObject go = (GameObject)Activator.CreateInstance(typeof(T), args:objectParams);
-            go.Id = nextID;
+            GenerateGuid(ref go);
             go.IsLocalToView = IsLocalPool;
             go.Parent = parent;
             go.ParentView = parentView;
             ObjectPool.Add(go);
             go.Init();
-            nextID++;
             return go;
+        }
+
+        private void GenerateGuid(ref GameObject go)
+        {
+            Guid uuid = Guid.NewGuid();
+
+            while (UsedGuids.Contains(uuid))
+                uuid = Guid.NewGuid();
+
+            go.Id = uuid;
+            UsedGuids.Add(uuid);
         }
 
         public int GetAllObjectCount() => ObjectPool.Count;

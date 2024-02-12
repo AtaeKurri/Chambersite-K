@@ -27,7 +27,7 @@ namespace Chambersite_K
         public GameObjectPool GlobalObjectPool { get; set; } = new GameObjectPool(false);
         internal IView? LoadingScreen { get; set; }
         internal List<IView> ActiveViews { get; set; } = new List<IView>();
-        private long nextViewId { get; set; } = 0;
+        private HashSet<Guid> UsedGuids = new HashSet<Guid>();
         #endregion
         #region ImGui Windows
         public bool AllowImGui = false;
@@ -69,9 +69,7 @@ namespace Chambersite_K
             foreach (IView view in ActiveViews)
             {
                 if (!view.WasInitialized)
-                {
                     view.Init();
-                }
             }
         }
 
@@ -107,19 +105,15 @@ namespace Chambersite_K
             if (!_IsInitialized)
                 return;
             GraphicsDevice.Clear(Color.Black);
-
             _spriteBatch.Begin(transformMatrix: Settings.GetViewportScale());
 
             RenderViewsByType();
 
             _spriteBatch.End();
-
             base.Draw(gameTime);
 
             if (!AllowImGui || !IsImGuiActive) return;
-
             GUIRenderer.BeforeLayout(gameTime);
-
 
             GUI_ViewAndObjectList.Draw();
 
@@ -174,15 +168,26 @@ namespace Chambersite_K
             else if (view.vType == ViewType.LoadingScreen)
                 throw new InvalidViewOperationException("You cannot add a Loading Screen into the Active Views.");
 
-            view.Id = nextViewId;
+            GenerateGuid(ref view);
             ActiveViews.Add(view);
             if (view.RenderOrder == -999_999_999)
                 view.RenderOrder = ActiveViews.Count-1;
             if (_IsInitialized)
                 view.Init();
+
             ActiveViews.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
-            nextViewId++;
             return view;
+        }
+
+        private void GenerateGuid(ref IView v)
+        {
+            Guid uuid = Guid.NewGuid();
+
+            while (UsedGuids.Contains(uuid))
+                uuid = Guid.NewGuid();
+
+            v.Id = uuid;
+            UsedGuids.Add(uuid);
         }
 
         /// <summary>

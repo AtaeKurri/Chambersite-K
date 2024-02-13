@@ -1,4 +1,5 @@
-﻿using Chambersite_K;
+﻿using Boleite.Players;
+using Chambersite_K;
 using Chambersite_K.GameObjects;
 using Chambersite_K.Graphics;
 using Chambersite_K.Views;
@@ -29,6 +30,7 @@ namespace TestGame
             LoadLocalResource<Texture2D>("Tial", "Assets/Tial.png");
             //Resource.LoadGlobalResource<Texture2D>("Tial", "Tial.png");
             CreateGameObject<TestObject>();
+            CreateGameObject<Player>();
             base.Init();
         }
     }
@@ -73,7 +75,7 @@ namespace TestGame
 
         public override void Frame()
         {
-            //RotationDegrees += 1.0f;
+            RotationDegrees += 1.0f;
             base.Frame();
         }
     }

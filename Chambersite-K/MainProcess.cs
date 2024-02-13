@@ -8,6 +8,7 @@ using Chambersite_K.Graphics;
 using Chambersite_K.GameObjects;
 using ImGuiNET;
 using Chambersite_K.ImGUI;
+using System;
 
 namespace Chambersite_K
 {
@@ -19,6 +20,8 @@ namespace Chambersite_K
         private ImGuiRenderer GUIRenderer;
         public KeyboardState currentKeyboardState;
         public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        public FrameCounter UpdateFPSCounter = new FrameCounter();
+        public FrameCounter DrawFPSCounter = new FrameCounter();
 
         #region Resources and Objects
         public Settings Settings { get; set; } = new Settings();
@@ -38,6 +41,7 @@ namespace Chambersite_K
         /// </summary>
         public Keys ToggleImGUI = Keys.F3;
         private GUIViewAndObjectList GUI_ViewAndObjectList = new GUIViewAndObjectList();
+        private GUIFrameStats GUI_FrameStats = new GUIFrameStats();
         #endregion
 
         public MainProcess(bool allowImGui)
@@ -82,6 +86,7 @@ namespace Chambersite_K
         {
             if (!_IsInitialized)
                 return;
+            UpdateFPSCounter.Update(gameTime);
             currentKeyboardState = Keyboard.GetState();
 
             if (currentKeyboardState.IsKeyPressedOnce(ToggleImGUI))
@@ -104,6 +109,7 @@ namespace Chambersite_K
         {
             if (!_IsInitialized)
                 return;
+            DrawFPSCounter.Update(gameTime);
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin(transformMatrix: Settings.GetViewportScale());
 
@@ -112,12 +118,7 @@ namespace Chambersite_K
             _spriteBatch.End();
             base.Draw(gameTime);
 
-            if (!AllowImGui || !IsImGuiActive) return;
-            GUIRenderer.BeforeLayout(gameTime);
-
-            GUI_ViewAndObjectList.Draw();
-
-            GUIRenderer.AfterLayout();
+            DrawImGui(gameTime);
         }
 
         private void RenderViewsByType()
@@ -211,5 +212,31 @@ namespace Chambersite_K
         }
 
         public KeyboardState GetKeyboardState() => currentKeyboardState;
+
+        private void DrawImGui(GameTime gameTime)
+        {
+            if (!AllowImGui || !IsImGuiActive) return;
+            GUIRenderer.BeforeLayout(gameTime);
+
+            if (ImGui.BeginMainMenuBar())
+            {
+                if (ImGui.BeginMenu("Game"))
+                {
+                    ImGui.EndMenu();
+                }
+                if (ImGui.BeginMenu("Tools"))
+                {
+                    if (ImGui.MenuItem("Frame Statistics", null, GUI_FrameStats.ShowWindow)) GUI_FrameStats.ShowWindow = !GUI_FrameStats.ShowWindow;
+                    if (ImGui.MenuItem("Object Instances", null, GUI_ViewAndObjectList.ShowWindow)) GUI_ViewAndObjectList.ShowWindow = !GUI_ViewAndObjectList.ShowWindow;
+                    ImGui.EndMenu();
+                }
+                ImGui.EndMainMenuBar();
+            }
+
+            GUI_ViewAndObjectList.Draw();
+            GUI_FrameStats.Draw(DrawFPSCounter, UpdateFPSCounter);
+
+            GUIRenderer.AfterLayout();
+        }
     }
 }

@@ -15,10 +15,13 @@ namespace Chambersite_K.ImGUI
 {
     internal class GUIViewAndObjectList
     {
+        public bool ShowWindow = true;
+
         public void Draw()
         {
-            ImGui.SetNextWindowSize(new System.Numerics.Vector2(500, 500), ImGuiCond.Appearing);
-            ImGui.Begin("Game Inspector");
+            if (!ShowWindow) return;
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(600, 600), ImGuiCond.Appearing);
+            ImGui.Begin("Game Inspector", ref ShowWindow);
             if (ImGui.BeginTabBar("##objectInspector"))
             {
                 if (ImGui.BeginTabItem("Views"))
@@ -121,6 +124,7 @@ namespace Chambersite_K.ImGUI
                     ImGui.Text($"Status: {child.Status}");
                     ImGui.Text($"Position: {child.Position}");
                     ImGui.Text($"Timer: {child.Timer}");
+                    ImGui.Text($"Render Order: {child.RenderOrder}");
                     ImGui.Text($"Angle & Rotation: {child.Angle} | {child.Rotation}");
                     if (ImGui.TreeNode($"More details for {child.InternalName}..."))
                     {

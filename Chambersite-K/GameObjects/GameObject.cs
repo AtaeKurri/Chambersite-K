@@ -11,6 +11,17 @@ using System.Xml.Linq;
 
 namespace Chambersite_K.GameObjects
 {
+    public enum GameObjectGroup
+    {
+        None, // Equivalent of "Ghost" in LuaSTG, will do nothing and interact will nothing.
+        EnemyBullet,
+        Enemy,
+        PlayerBullet,
+        Player,
+        Item,
+        Indestructible, // Cannot be deleted by other objects, only by explicitely call the del/kill function on them.
+    }
+
     public enum GameObjectStatus
     {
         Active,
@@ -24,6 +35,7 @@ namespace Chambersite_K.GameObjects
         public string InternalName { get; set; }
         public Guid? Id { get; set; } = null;
         public GameObjectStatus Status { get; set; } = GameObjectStatus.Active;
+        public GameObjectGroup Group { get; set; } = GameObjectGroup.None;
         /// <summary>
         /// Checks if this <see cref="GameObject"/> instance is local to a <see cref="View"/> or a Global object.
         /// </summary>

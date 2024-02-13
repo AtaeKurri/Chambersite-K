@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chambersite_K
+namespace Chambersite_K.GameSettings
 {
     public struct SettingData
     {

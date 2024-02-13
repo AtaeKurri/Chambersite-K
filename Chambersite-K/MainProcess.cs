@@ -8,6 +8,7 @@ using Chambersite_K.Graphics;
 using Chambersite_K.GameObjects;
 using ImGuiNET;
 using Chambersite_K.ImGUI;
+using Chambersite_K.GameSettings;
 using System;
 
 namespace Chambersite_K

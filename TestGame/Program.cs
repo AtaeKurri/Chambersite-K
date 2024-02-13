@@ -2,6 +2,7 @@
 using Chambersite_K;
 using Chambersite_K.GameObjects;
 using Chambersite_K.Graphics;
+using Chambersite_K.GameSettings;
 using Chambersite_K.Views;
 using Chambersite_K.World;
 using Microsoft.Xna.Framework;
@@ -9,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TestGame
 {
+
     internal class Program
     {
         static void Main(string[] args)
@@ -18,6 +20,12 @@ namespace TestGame
             game.AddView<GameUI>();
             game.AddView<TestBackground>();
             game.Run();
+
+            /*
+             * Let people define their configs.
+             * People must be allowed to define an enumerator for the GameObject groups
+             * and set the collision checking routing themselves.
+             */
         }
     }
 
@@ -75,7 +83,7 @@ namespace TestGame
 
         public override void Frame()
         {
-            RotationDegrees += 1.0f;
+            //RotationDegrees += 1.0f;
             base.Frame();
         }
     }

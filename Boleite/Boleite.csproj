@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Assets\Bullets\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Assets\" />
   </ItemGroup>
 
   <ItemGroup>

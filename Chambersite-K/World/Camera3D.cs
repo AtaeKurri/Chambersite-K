@@ -2,19 +2,8 @@
 
 namespace Chambersite_K.World
 {
-    public class Camera3D
+    public class Camera3D : Camera<Vector3>
     {
-        public Vector3 Position { get; set; }
-        public Vector3 Target { get; set; }
-        public Vector3 Up { get; set; }
-        public Matrix ViewMatrix { get; private set; }
-        public Matrix ProjectionMatrix { get; private set; }
-
-        private float aspectRatio;
-        private float fieldOfView;
-        private float nearPlaneDistance;
-        private float farPlaneDistance;
-
         public Camera3D(Vector3 position, Vector3 target, Vector3 up,
             float fieldOfView=MathHelper.PiOver4, float nearPlaneDistance=0.1f, float farPlaneDistance=1000f)
         {

@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Boleite.Players
 {
-    [InternalName("Support")]
-    public class Support : GameObject
+    [InternalName("Player Support")]
+    public class PlayerSupport : GameObject
     {
     }
 }

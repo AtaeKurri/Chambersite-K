@@ -17,7 +17,7 @@ namespace Boleite.Players
         public bool IsLocked { get; set; } = false;
 
         public int ProtectTime { get; set; } = 0;
-        public List<Support> Supports { get; set; } = new List<Support>();
+        public List<PlayerSupport> Supports { get; set; } = new List<PlayerSupport>();
         public GameObject? Target { get; set; }
 
         public int NextShoot { get; set; } = 0;

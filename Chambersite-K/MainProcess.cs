@@ -25,7 +25,7 @@ namespace Chambersite_K
         public FrameCounter DrawFPSCounter = new FrameCounter();
 
         #region Resources and Objects
-        public Settings Settings { get; set; } = new Settings();
+        public static Settings Settings { get; set; } = new Settings();
 
         public List<Resource> GlobalResource { get; set; } = new List<Resource>();
         public GameObjectPool GlobalObjectPool { get; set; } = new GameObjectPool(false);

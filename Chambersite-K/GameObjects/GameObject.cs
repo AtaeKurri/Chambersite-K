@@ -2,6 +2,9 @@
 using Chambersite_K.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
+using MonoGame.Extended.Collisions;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +33,9 @@ namespace Chambersite_K.GameObjects
     }
 
     // GameObjects should never try to load resources from themselves
-    public abstract class GameObject : IGameObject, IParentable
+    public abstract class GameObject : IGameObject, IParentable, ICollisionActor
     {
+        #region Properties
         public string InternalName { get; set; }
         public Guid? Id { get; set; } = null;
         public GameObjectStatus Status { get; set; } = GameObjectStatus.Active;
@@ -42,6 +46,7 @@ namespace Chambersite_K.GameObjects
         public bool IsLocalToView { get; set; } = false;
         public long Timer { get; set; } = 0;
         public int RenderOrder { get; set; } = -999_999_999;
+        public IShapeF Bounds { get; set; }
 
         public Vector2 Position { get; set; } = Vector2.Zero;
         public float Velocity { get; set; } = 0.0f;
@@ -91,6 +96,10 @@ namespace Chambersite_K.GameObjects
         public delegate void DestroyEventHandler();
         public event DestroyEventHandler OnDestroy;
 
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+        #endregion
+
         public GameObject()
         {
             InternalNameAttribute goNameAttr = (InternalNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InternalNameAttribute));
@@ -134,6 +143,20 @@ namespace Chambersite_K.GameObjects
             ImageTexture?.Render(Position, Rotation, Scale);
         }
 
+        public void DrawCollision()
+        {
+            Type type = Bounds.GetType();
+            switch (type)
+            {
+                case Type when type == typeof(RectangleF):
+                    GAME._spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Red, 3);
+                    break;
+                case Type when type == typeof(EllipseF):
+                    GAME._spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Red, 3);
+                    break;
+            }
+        }
+
         public virtual void Delete()
         {
             if (Status == GameObjectStatus.Invalid)
@@ -148,6 +171,11 @@ namespace Chambersite_K.GameObjects
                 return;
             Status = GameObjectStatus.Invalid;
             OnDestroy();
+        }
+
+        public virtual void OnCollision(CollisionEventArgs collisionInfo)
+        {
+            Logger.Debug("Collided");
         }
 
         /// <summary>

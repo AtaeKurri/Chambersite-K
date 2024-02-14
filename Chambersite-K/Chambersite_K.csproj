@@ -13,6 +13,13 @@
     <FileVersion>1.0.0</FileVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <Nullable>annotations</Nullable>
+    <BaseOutputPath>..\bin</BaseOutputPath>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <SignAssembly>False</SignAssembly>
+    <Title>Chambersite_K</Title>
+    <Company>Tania Anehina</Company>
+    <PackageProjectUrl>https://github.com/AtaeKurri/Chambersite-K</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Icon.ico" />
@@ -31,6 +38,8 @@
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="4.1.0" />
     <PackageReference Include="ImGui.NET" Version="1.90.1.1" />
+    <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
+    <PackageReference Include="MonoGame.Extended.Collisions" Version="3.8.0" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
     <PackageReference Include="NLog" Version="5.2.8" />

@@ -28,7 +28,7 @@ namespace Chambersite_K
         public static Settings Settings { get; set; } = new Settings();
 
         public List<Resource> GlobalResource { get; set; } = new List<Resource>();
-        public GameObjectPool GlobalObjectPool { get; set; } = new GameObjectPool(false);
+        public GameObjectPool GlobalObjectPool { get; set; }
         internal IView? LoadingScreen { get; set; }
         internal List<IView> ActiveViews { get; set; } = new List<IView>();
         private HashSet<Guid> UsedGuids = new HashSet<Guid>();
@@ -52,7 +52,8 @@ namespace Chambersite_K
             GAME = this;
             _graphics = new GraphicsDeviceManager(this);
             //Content.RootDirectory = "Content";
-            IsMouseVisible = Settings.SettingData.IsMouseVisible;
+            GlobalObjectPool = new GameObjectPool(this);
+            IsMouseVisible = Settings.IsMouseVisible;
             AllowImGui = allowImGui;
         }
 
@@ -94,9 +95,8 @@ namespace Chambersite_K
                 IsImGuiActive = !IsImGuiActive;
 
             foreach (IView view in ActiveViews)
-                if (view.ViewStatus == ViewStatus.Active) view.Frame();
-            foreach (GameObject gameObject in GlobalObjectPool) // Only do Frame() on those object, DON'T render them.
-                gameObject.Frame();
+                if (view.ViewStatus == ViewStatus.Active) view.Frame(gameTime);
+            GlobalObjectPool.Frame(gameTime);
 
             currentKeyboardState.UpdatePreviousKeyboardState();
             base.Update(gameTime);
@@ -135,7 +135,7 @@ namespace Chambersite_K
         private void UpdateViewport(object sender, EventArgs e)
         {
             Viewport viewport = GraphicsDevice.Viewport;
-            float aspectRatio = Settings.SettingData.ViewportSize.X / Settings.SettingData.ViewportSize.Y;
+            float aspectRatio = Settings.ViewportSize.X / Settings.ViewportSize.Y;
             int width = viewport.Width;
             int height = (int)(width / aspectRatio + 0.5f);
 
@@ -212,7 +212,7 @@ namespace Chambersite_K
             return view;
         }
 
-        public KeyboardState GetKeyboardState() => currentKeyboardState;
+        public static KeyboardState GetKeyboardState() => Keyboard.GetState();
 
         private void DrawImGui(GameTime gameTime)
         {

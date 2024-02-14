@@ -1,6 +1,8 @@
 ﻿using Chambersite_K.GameObjects;
 using Chambersite_K.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +21,9 @@ namespace Chambersite_K.Views
         public bool WasInitialized { get; }
         public long Timer { get; set; }
         public int RenderOrder { get; set; }
+        public RectangleF WorldBounds { get; set; }
         public void Init();
-        public void Frame();
+        public void Frame(GameTime gameTime);
         public void Render();
     }
 }

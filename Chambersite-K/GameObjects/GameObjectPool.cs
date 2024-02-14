@@ -1,4 +1,6 @@
 ﻿using Chambersite_K.Views;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended.Collisions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,12 +13,41 @@ namespace Chambersite_K.GameObjects
     public sealed class GameObjectPool : IEnumerable<GameObject>
     {
         public List<GameObject> ObjectPool { get; set; } = new List<GameObject>();
+        private readonly CollisionComponent CollisionChecker;
         private bool IsLocalPool = false;
         private HashSet<Guid> UsedGuids = new HashSet<Guid>();
+        private object Parent;
 
-        public GameObjectPool(bool isLocal)
+        public GameObjectPool(MainProcess parent)
         {
-            IsLocalPool = isLocal;
+            IsLocalPool = false;
+            Parent = parent;
+            CollisionChecker = new CollisionComponent(new MonoGame.Extended.RectangleF(
+                MainProcess.Settings.ViewportSize.X,
+                MainProcess.Settings.ViewportSize.Y,
+                384,
+                224
+            ));
+        }
+
+        public GameObjectPool(IView parent)
+        {
+            IsLocalPool = true;
+            Parent = parent;
+            CollisionChecker = new CollisionComponent(parent.WorldBounds);
+        }
+
+        public void Frame(GameTime gameTime)
+        {
+            foreach (GameObject gameObject in ObjectPool)
+                gameObject.Frame();
+            CollisionChecker.Update(gameTime);
+        }
+
+        public void Render()
+        {
+            foreach (GameObject gameObject in ObjectPool)
+                gameObject.Render();
         }
 
         public GameObject CreateGameObject<T>(IParentable parent, IView parentView, params object[] objectParams)
@@ -28,6 +59,7 @@ namespace Chambersite_K.GameObjects
             go.ParentView = parentView;
             ObjectPool.Add(go);
             go.Init();
+            CollisionChecker.Insert(go);
             return go;
         }
 

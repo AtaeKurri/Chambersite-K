@@ -8,36 +8,28 @@ using System.Threading.Tasks;
 
 namespace Chambersite_K.GameSettings
 {
-    public struct SettingData
-    {
-        public SettingData() { }
-
-        public bool IsFullscreen { get; set; } = false;
-        public Vector2 WindowSize { get; set; } = new Vector2(1600, 900);
-        public Vector2 ViewportSize { get; set; } = new Vector2(853, 480);
-        public bool IsMouseVisible { get; set; } = true;
-        public Keybindings Keybindings { get; set; } = new Keybindings();
-    }
-
-    public struct Keybindings
-    {
-        public Keybindings() { }
-
-        public Keys Up { get; set; } = Keys.Up;
-        public Keys Down { get; set; } = Keys.Down;
-        public Keys Left { get; set; } = Keys.Left;
-        public Keys Right { get; set; } = Keys.Right;
-        public Keys Shoot { get; set; } = Keys.W;
-        public Keys Bomb { get; set; } = Keys.X;
-        public Keys Special { get; set; } = Keys.C;
-    }
-
     public class Settings
     {
         public string FilePath { get; set; } = "userdata/";
-        public SettingData SettingData { get; set; } = new SettingData();
+        public List<(string, Keys)> Keybinds { get; set; } =
+        [
+            new ("Up", Keys.Up),
+            new ("Down", Keys.Down),
+            new ("Left", Keys.Left),
+            new ("Right", Keys.Right),
+            new ("Shoot", Keys.W),
+            new ("Bomb", Keys.X),
+            new ("Special", Keys.C),
+        ];
 
-        public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        protected static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public virtual bool IsFullscreen { get; set; } = false;
+        public virtual Vector2 WindowSize { get; set; } = new Vector2(1600, 900);
+        public virtual Vector2 ViewportSize { get; set; } = new Vector2(853, 480);
+        public virtual bool IsMouseVisible { get; set; } = true;
+        public float BGMVolume { get; private set; } = .5f; // Always clamp from 0 to 100.
+        public float SEVolume { get; private set; } = .5f; // Same, clamp from 0 to 100.
 
         public Settings()
         {
@@ -46,19 +38,36 @@ namespace Chambersite_K.GameSettings
 
         public void LoadSettings()
         {
-            GAME._graphics.IsFullScreen = SettingData.IsFullscreen;
-            GAME._graphics.PreferredBackBufferWidth = (int)SettingData.WindowSize.X;
-            GAME._graphics.PreferredBackBufferHeight = (int)SettingData.WindowSize.Y;
+            GAME._graphics.IsFullScreen = IsFullscreen;
+            GAME._graphics.PreferredBackBufferWidth = (int)WindowSize.X;
+            GAME._graphics.PreferredBackBufferHeight = (int)WindowSize.Y;
+
             GAME._graphics.ApplyChanges();
             Logger.Info("Settings Loaded and applied.");
         }
 
         public Matrix GetViewportScale()
         {
-            float scaleX = SettingData.WindowSize.X / SettingData.ViewportSize.X;
-            float scaleY = SettingData.WindowSize.Y / SettingData.ViewportSize.Y;
-            Matrix scaleMatrix = Matrix.CreateScale(scaleX, scaleY, 1.0f);
+            float scaleX = WindowSize.X / ViewportSize.X;
+            float scaleY = WindowSize.Y / ViewportSize.Y;
+            Matrix scaleMatrix = Matrix.CreateScale(scaleX, scaleY, 1f);
             return scaleMatrix;
+        }
+
+        public void SetBGMVolume(float volume) => BGMVolume = MathHelper.Clamp(volume, 0f, 1f);
+        public void SetSEVolume(float volume) => SEVolume = MathHelper.Clamp(volume, 0f, 1f);
+
+        /// <summary>
+        /// Try to get a <see cref="Keys"/> from a corresponding identifier.
+        /// </summary>
+        /// <param name="identifier">The string to identify a Key by its name.</param>
+        /// <returns>A <see cref="Keys"/> code.</returns>
+        /// <exception cref="KeyNotFoundException">Is thrown if the identifier doesn't not match any exisiting one.</exception>
+        public Keys GetKey(string identifier)
+        {
+            (string, Keys) key = Keybinds.Find(x => x.Item1 == identifier);
+            if (key == default) { throw new KeyNotFoundException("This Keybind does not exist, check case or any typos."); }
+            return key.Item2;
         }
     }
 }

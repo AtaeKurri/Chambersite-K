@@ -1,6 +1,8 @@
 ﻿using Assimp;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,23 +45,41 @@ namespace Chambersite_K.Graphics
             }
             using (FileStream fs = new FileStream(filePath, FileMode.Open))
             {
-                Type type = typeof(T);
-                switch (type)
+                try
                 {
-                    // TODO: Ajouter tous les types pouvant être lus par un FileStream.
-                    case Type _ when type == typeof(Texture2D):
-                        return new Resource(resourceName, (T)Convert.ChangeType(_loadTexture2DFromStream(fs), typeof(T)), filePath);
-                    case Type _ when type == typeof(Model):
-                        return new Resource(resourceName, (T)Convert.ChangeType(_LoadModelFromFile(filePath), typeof(T)), filePath);
-                    case Type _ when type == typeof(TTFFont):
-                        return new Resource(resourceName, (T)Convert.ChangeType(new TTFFont(filePath), typeof(T)), filePath);
-                    default:
-                        throw new ArgumentException("The type provided is not a valid resource type.");
+                    Type type = typeof(T);
+                    switch (type)
+                    {
+                        // TODO: Ajouter tous les types pouvant être lus par un FileStream.
+                        case Type when type == typeof(Texture2D):
+                            return new Resource(resourceName, (T)Convert.ChangeType(_loadTexture2DFromStream(fs), typeof(T)), filePath);
+                        case Type when type == typeof(Model):
+                            return new Resource(resourceName, (T)Convert.ChangeType(_LoadModelFromFile(filePath), typeof(T)), filePath);
+                        case Type when type == typeof(TTFFont):
+                            return new Resource(resourceName, (T)Convert.ChangeType(new TTFFont(filePath), typeof(T)), filePath);
+                        case Type when type == typeof(Song):
+                            return new Resource(resourceName, (T)Convert.ChangeType(Song.FromUri(resourceName, new Uri(filePath)), typeof(T)), filePath);
+                        case Type when type == typeof(SoundEffect):
+                            return new Resource(resourceName, (T)Convert.ChangeType(_loadSoundEffectFromStream(fs), typeof(T)), filePath);
+                        default:
+                            throw new ArgumentException("The type provided is not a valid resource type.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"The file {filePath} couldn't be loaded: {ex}");
+                    return null;
+                }
+                finally
+                {
+                    // Normally that shouldn't be needed but JUST IN CASE.
+                    fs.Close();
                 }
             }
         }
 
         private static Texture2D _loadTexture2DFromStream(FileStream fs) => Texture2D.FromStream(GAME._graphics.GraphicsDevice, fs);
+        private static SoundEffect _loadSoundEffectFromStream(FileStream fs) => SoundEffect.FromStream(fs);
 
         private static Model _LoadModelFromFile(string fileName)
         {

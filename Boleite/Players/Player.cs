@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Chambersite_K;
 using Chambersite_K.GameObjects;
 using Chambersite_K.Views;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Boleite.Players
 {
@@ -24,6 +27,8 @@ namespace Boleite.Players
         public int NextBomb { get; set; } = 0;
         public int NextSpecial { get; set; } = 0;
 
+        public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public override void Init()
         {
             base.Init();
@@ -31,6 +36,8 @@ namespace Boleite.Players
 
         public override void Frame()
         {
+            if (Keyboard.GetState().IsKeyPressedOnce(MainProcess.Settings.GetKey("Shoot")))
+                Logger.Debug("Shoot Pressed");
             base.Frame();
         }
 

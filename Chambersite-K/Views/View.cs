@@ -1,6 +1,8 @@
 ﻿using Chambersite_K.GameObjects;
 using Chambersite_K.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,13 +41,14 @@ namespace Chambersite_K.Views
         public bool WasInitialized { get; private set; } = false;
         public long Timer { get; set; } = 0;
         public int RenderOrder { get; set; } = -999_999_999;
+        public RectangleF WorldBounds { get; set; } = new RectangleF(MainProcess.Settings.ViewportSize.X, MainProcess.Settings.ViewportSize.Y, 384, 224);
 
         /// <summary>
         /// Stores all the resources loaded from type view scope. Access it directly to render standalone images.<br/>
         /// See <see cref="ResourceExtensions.FindResource{T}(List{Resource}, string)"/> to find resources inside this List more easily.
         /// </summary>
         public List<Resource> LocalResources { get; set; } = new List<Resource>();
-        public GameObjectPool LocalObjectPool { get; set; } = new GameObjectPool(true);
+        public GameObjectPool LocalObjectPool { get; set; }
 
         /// <summary>
         /// The Parent of a View is always the instanced <see cref="MainProcess"/> object.
@@ -59,6 +62,8 @@ namespace Chambersite_K.Views
         public View()
         {
             ParentView = this;
+            LocalObjectPool = new GameObjectPool(this);
+
             ViewTypeAttribute viewTypeAttr = (ViewTypeAttribute)Attribute.GetCustomAttribute(GetType(), typeof(ViewTypeAttribute));
             vType = (viewTypeAttr != null) ? viewTypeAttr.ViewType : ViewType.Stage;
 
@@ -85,24 +90,21 @@ namespace Chambersite_K.Views
             Logger.Debug("View {0} Initialized.", InternalName);
         }
 
-        public virtual void Frame()
+        public virtual void Frame(GameTime gameTime)
         {
             if (ViewStatus == ViewStatus.Hidden || ViewStatus == ViewStatus.Paused)
                 return;
-            foreach (GameObject gameObject in LocalObjectPool)
-            {
-                gameObject.Frame();
-            }
+
+            LocalObjectPool.Frame(gameTime);
+            
             Timer++;
         }
+
         public virtual void Render()
         {
             if (ViewStatus == ViewStatus.Hidden)
                 return;
-            foreach (GameObject gameObject in LocalObjectPool)
-            {
-                gameObject.Render();
-            }
+            LocalObjectPool.Render();
         }
 
         public Resource LoadLocalResource<T>(string name, string filepath)
@@ -146,6 +148,11 @@ namespace Chambersite_K.Views
         public void AddChild(GameObject child)
         {
             Children.Add(child);
+        }
+
+        public void MoveWorldBounds(RectangleF bounds)
+        {
+            WorldBounds = bounds;
         }
     }
 }

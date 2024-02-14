@@ -72,7 +72,7 @@ namespace TestGame
         public int TestProperty { get; set; } = 0;
         public override void Init()
         {
-            Position = new Vector2(MainProcess.Settings.SettingData.ViewportSize.X / 2, MainProcess.Settings.SettingData.ViewportSize.Y / 2);
+            Position = new Vector2(MainProcess.Settings.ViewportSize.X / 2, MainProcess.Settings.ViewportSize.Y / 2);
             Scale = new Vector2(0.3f, 0.3f);
             RotationDegrees = 90f;
             Velocity = 0f;
@@ -93,7 +93,7 @@ namespace TestGame
         public override void Init()
         {
             Image = "UI";
-            Position = new Vector2(MainProcess.Settings.SettingData.ViewportSize.X / 2, MainProcess.Settings.SettingData.ViewportSize.Y / 2);
+            Position = new Vector2(MainProcess.Settings.ViewportSize.X / 2, MainProcess.Settings.ViewportSize.Y / 2);
             base.Init();
         }
     }

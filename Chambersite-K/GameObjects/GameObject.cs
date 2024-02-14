@@ -151,8 +151,8 @@ namespace Chambersite_K.GameObjects
                 case Type when type == typeof(RectangleF):
                     GAME._spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Red, 3);
                     break;
-                case Type when type == typeof(EllipseF):
-                    GAME._spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Red, 3);
+                case Type when type == typeof(CircleF):
+                    GAME._spriteBatch.DrawCircle((CircleF)Bounds, 8, Color.Red, 3);
                     break;
             }
         }

@@ -8,7 +8,654 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Bullets\" />
+    <Compile Remove="Assets\Bullets\**" />
+    <EmbeddedResource Remove="Assets\Bullets\**" />
+    <None Remove="Assets\Bullets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\bullet\bullet1.png" />
+    <None Remove="Assets\bullet\bullet2.png" />
+    <None Remove="Assets\bullet\bullet3.png" />
+    <None Remove="Assets\bullet\bullet4.png" />
+    <None Remove="Assets\bullet\bullet5.png" />
+    <None Remove="Assets\bullet\bullet6.png" />
+    <None Remove="Assets\bullet\bullet_ball_huge.png" />
+    <None Remove="Assets\bullet\bullet_music.png" />
+    <None Remove="Assets\bullet\bullet_water_drop.png" />
+    <None Remove="Assets\bullet\etbreak.png" />
+    <None Remove="Assets\bullet\Magic1.png" />
+    <None Remove="Assets\enemy\boss.png" />
+    <None Remove="Assets\enemy\boss_cardleft.png" />
+    <None Remove="Assets\enemy\Cherry.png" />
+    <None Remove="Assets\enemy\dialog box.png" />
+    <None Remove="Assets\enemy\dialog_balloon.png" />
+    <None Remove="Assets\enemy\dialog_box.png" />
+    <None Remove="Assets\enemy\eff_cnlight.png" />
+    <None Remove="Assets\enemy\eff_magicsquare.png" />
+    <None Remove="Assets\enemy\enemy1.png" />
+    <None Remove="Assets\enemy\enemy2.png" />
+    <None Remove="Assets\enemy\enemy3.png" />
+    <None Remove="Assets\enemy\lifebar.png" />
+    <None Remove="Assets\enemy\ring00.png" />
+    <None Remove="Assets\enemy\scname_sign.png" />
+    <None Remove="Assets\enemy\sc_his_stage.png" />
+    <None Remove="Assets\enemy\shockwave.png" />
+    <None Remove="Assets\enemy\timesign.png" />
+    <None Remove="Assets\enemy\undefined.png" />
+    <None Remove="Assets\item\item.png" />
+    <None Remove="Assets\laser\laser1.png" />
+    <None Remove="Assets\laser\laser2.png" />
+    <None Remove="Assets\laser\laser3.png" />
+    <None Remove="Assets\laser\laser4.png" />
+    <None Remove="Assets\laser\laser5.png" />
+    <None Remove="Assets\laser\laser_bent.png" />
+    <None Remove="Assets\misc\img_void.png" />
+    <None Remove="Assets\misc\misc.png" />
+    <None Remove="Assets\misc\particles.png" />
+    <None Remove="Assets\se\se_alert.wav" />
+    <None Remove="Assets\se\se_astralup.wav" />
+    <None Remove="Assets\se\se_big.wav" />
+    <None Remove="Assets\se\se_bonus.wav" />
+    <None Remove="Assets\se\se_bonus2.wav" />
+    <None Remove="Assets\se\se_bonus3.wav" />
+    <None Remove="Assets\se\se_boon00.wav" />
+    <None Remove="Assets\se\se_boon01.wav" />
+    <None Remove="Assets\se\se_border.wav" />
+    <None Remove="Assets\se\se_cancel00.wav" />
+    <None Remove="Assets\se\se_cardget.wav" />
+    <None Remove="Assets\se\se_cat00.wav" />
+    <None Remove="Assets\se\se_cat01.wav" />
+    <None Remove="Assets\se\se_ch00.wav" />
+    <None Remove="Assets\se\se_ch01.wav" />
+    <None Remove="Assets\se\se_ch02.wav" />
+    <None Remove="Assets\se\se_changeitem.wav" />
+    <None Remove="Assets\se\se_damage00.wav" />
+    <None Remove="Assets\se\se_damage01.wav" />
+    <None Remove="Assets\se\se_don00.wav" />
+    <None Remove="Assets\se\se_down.wav" />
+    <None Remove="Assets\se\se_enep00.wav" />
+    <None Remove="Assets\se\se_enep01.wav" />
+    <None Remove="Assets\se\se_enep02.wav" />
+    <None Remove="Assets\se\se_explode.wav" />
+    <None Remove="Assets\se\se_extend.wav" />
+    <None Remove="Assets\se\se_extend2.wav" />
+    <None Remove="Assets\se\se_fault.wav" />
+    <None Remove="Assets\se\se_focusfix.wav" />
+    <None Remove="Assets\se\se_focusfix2.wav" />
+    <None Remove="Assets\se\se_focusin.wav" />
+    <None Remove="Assets\se\se_graze.wav" />
+    <None Remove="Assets\se\se_gun00.wav" />
+    <None Remove="Assets\se\se_heal.wav" />
+    <None Remove="Assets\se\se_hint00.wav" />
+    <None Remove="Assets\se\se_hyz_charge00.wav" />
+    <None Remove="Assets\se\se_hyz_charge01b.wav" />
+    <None Remove="Assets\se\se_hyz_chargeup.wav" />
+    <None Remove="Assets\se\se_hyz_eterase.wav" />
+    <None Remove="Assets\se\se_hyz_exattack.wav" />
+    <None Remove="Assets\se\se_hyz_gosp.wav" />
+    <None Remove="Assets\se\se_hyz_life1.wav" />
+    <None Remove="Assets\se\se_hyz_playerdead.wav" />
+    <None Remove="Assets\se\se_hyz_timestop0.wav" />
+    <None Remove="Assets\se\se_hyz_warning.wav" />
+    <None Remove="Assets\se\se_ice.wav" />
+    <None Remove="Assets\se\se_ice2.wav" />
+    <None Remove="Assets\se\se_invalid.wav" />
+    <None Remove="Assets\se\se_item00.wav" />
+    <None Remove="Assets\se\se_item01.wav" />
+    <None Remove="Assets\se\se_kira00.wav" />
+    <None Remove="Assets\se\se_kira01.wav" />
+    <None Remove="Assets\se\se_kira02.wav" />
+    <None Remove="Assets\se\se_lazer00.wav" />
+    <None Remove="Assets\se\se_lazer01.wav" />
+    <None Remove="Assets\se\se_lazer02.wav" />
+    <None Remove="Assets\se\se_lgods1.wav" />
+    <None Remove="Assets\se\se_lgods2.wav" />
+    <None Remove="Assets\se\se_lgods3.wav" />
+    <None Remove="Assets\se\se_lgods4.wav" />
+    <None Remove="Assets\se\se_lgodsget.wav" />
+    <None Remove="Assets\se\se_msl.wav" />
+    <None Remove="Assets\se\se_msl2.wav" />
+    <None Remove="Assets\se\se_msl3.wav" />
+    <None Remove="Assets\se\se_nep00.wav" />
+    <None Remove="Assets\se\se_nice.wav" />
+    <None Remove="Assets\se\se_nodamage.wav" />
+    <None Remove="Assets\se\se_noise.wav" />
+    <None Remove="Assets\se\se_ok00.wav" />
+    <None Remove="Assets\se\se_old_cat00.wav" />
+    <None Remove="Assets\se\se_old_enep00.wav" />
+    <None Remove="Assets\se\se_old_enep01.wav" />
+    <None Remove="Assets\se\se_old_extend.wav" />
+    <None Remove="Assets\se\se_old_gun00.wav" />
+    <None Remove="Assets\se\se_old_kira00.wav" />
+    <None Remove="Assets\se\se_old_kira01.wav" />
+    <None Remove="Assets\se\se_old_lazer01.wav" />
+    <None Remove="Assets\se\se_old_nep00.wav" />
+    <None Remove="Assets\se\se_old_pldead00.wav" />
+    <None Remove="Assets\se\se_old_power0.wav" />
+    <None Remove="Assets\se\se_old_power1.wav" />
+    <None Remove="Assets\se\se_old_powerup.wav" />
+    <None Remove="Assets\se\se_ophide.wav" />
+    <None Remove="Assets\se\se_opshow.wav" />
+    <None Remove="Assets\se\se_option.wav" />
+    <None Remove="Assets\se\se_pause.wav" />
+    <None Remove="Assets\se\se_pin00.wav" />
+    <None Remove="Assets\se\se_pldead00.wav" />
+    <None Remove="Assets\se\se_plst00.wav" />
+    <None Remove="Assets\se\se_power0.wav" />
+    <None Remove="Assets\se\se_power02.wav" />
+    <None Remove="Assets\se\se_power1.wav" />
+    <None Remove="Assets\se\se_power2.wav" />
+    <None Remove="Assets\se\se_powerup.wav" />
+    <None Remove="Assets\se\se_powerup1.wav" />
+    <None Remove="Assets\se\se_select00.wav" />
+    <None Remove="Assets\se\se_slash.wav" />
+    <None Remove="Assets\se\se_tan00.wav" />
+    <None Remove="Assets\se\se_tan01.wav" />
+    <None Remove="Assets\se\se_tan02.wav" />
+    <None Remove="Assets\se\se_timeout.wav" />
+    <None Remove="Assets\se\se_timeout2.wav" />
+    <None Remove="Assets\se\se_warpl.wav" />
+    <None Remove="Assets\se\se_warpr.wav" />
+    <None Remove="Assets\se\se_water.wav" />
+    <None Remove="Assets\se\se_wolf.wav" />
+    <None Remove="Assets\UI\boss_ui.png" />
+    <None Remove="Assets\UI\hint.png" />
+    <None Remove="Assets\UI\hint1.png" />
+    <None Remove="Assets\UI\line.png" />
+    <None Remove="Assets\UI\logo.png" />
+    <None Remove="Assets\UI\menu_bg.png" />
+    <None Remove="Assets\UI\menu_bg1.png" />
+    <None Remove="Assets\UI\menu_bg_2.png" />
+    <None Remove="Assets\UI\pause.png" />
+    <None Remove="Assets\UI\rank.png" />
+    <None Remove="Assets\UI\replay_title.png" />
+    <None Remove="Assets\UI\save_rep_title.png" />
+    <None Remove="Assets\UI\ui_bg.png" />
+    <None Remove="Assets\UI\ui_bg_2.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\bullet\bullet1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bullet\bullet2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bullet\bullet3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bullet\bullet4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bullet\bullet5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bullet\bullet6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bullet\bullet_ball_huge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bullet\bullet_music.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bullet\bullet_water_drop.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bullet\etbreak.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bullet\Magic1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\boss.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\boss_cardleft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\Cherry.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\dialog box.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\dialog_balloon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\dialog_box.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\eff_cnlight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\eff_magicsquare.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\enemy1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\enemy2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\enemy3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\lifebar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\ring00.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\scname_sign.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\sc_his_stage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\shockwave.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\timesign.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\enemy\undefined.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\item\item.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\laser\laser1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\laser\laser2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\laser\laser3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\laser\laser4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\laser\laser5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\laser\laser_bent.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\misc\img_void.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\misc\misc.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\misc\particles.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_alert.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_astralup.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_big.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_bonus.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_bonus2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_bonus3.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_boon00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_boon01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_border.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_cancel00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_cardget.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_cat00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_cat01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_ch00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_ch01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_ch02.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_changeitem.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_damage00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_damage01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_don00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_down.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_enep00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_enep01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_enep02.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_explode.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_extend.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_extend2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_fault.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_focusfix.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_focusfix2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_focusin.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_graze.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_gun00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_heal.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hint00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hyz_charge00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hyz_charge01b.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hyz_chargeup.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hyz_eterase.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hyz_exattack.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hyz_gosp.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hyz_life1.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hyz_playerdead.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hyz_timestop0.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_hyz_warning.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_ice.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_ice2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_invalid.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_item00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_item01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_kira00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_kira01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_kira02.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_lazer00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_lazer01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_lazer02.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_lgods1.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_lgods2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_lgods3.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_lgods4.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_lgodsget.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_msl.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_msl2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_msl3.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_nep00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_nice.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_nodamage.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_noise.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_ok00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_cat00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_enep00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_enep01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_extend.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_gun00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_kira00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_kira01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_lazer01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_nep00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_pldead00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_power0.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_power1.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_old_powerup.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_ophide.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_opshow.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_option.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_pause.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_pin00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_pldead00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_plst00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_power0.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_power02.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_power1.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_power2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_powerup.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_powerup1.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_select00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_slash.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_tan00.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_tan01.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_tan02.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_timeout.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_timeout2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_warpl.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_warpr.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_water.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\se\se_wolf.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\boss_ui.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\hint.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\hint1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\line.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\menu_bg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\menu_bg1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\menu_bg_2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\pause.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\rank.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\replay_title.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\save_rep_title.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\ui_bg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\ui_bg_2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Helpers\" />
   </ItemGroup>
 

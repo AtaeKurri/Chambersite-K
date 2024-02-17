@@ -7,6 +7,7 @@ using Chambersite_K.Views;
 using Chambersite_K.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Boleite.Bullets;
 
 namespace TestGame
 {
@@ -15,6 +16,7 @@ namespace TestGame
         static void Main(string[] args)
         {
             using MainProcess game = new MainProcess(true);
+            game.SetLoadingScreen<MainLoadingScreen>();
             game.AddView<MainStage>();
             game.AddView<GameUI>();
             game.AddView<TestBackground>();
@@ -25,6 +27,15 @@ namespace TestGame
              * People must be allowed to define an enumerator for the GameObject groups
              * and set the collision checking routing themselves.
              */
+        }
+    }
+
+    public class MainLoadingScreen : LoadingScreen
+    {
+        public MainLoadingScreen()
+            : base()
+        {
+            AddResourceLoader<BulletResourceLoader>();
         }
     }
 
@@ -70,13 +81,14 @@ namespace TestGame
     public class TestObject : GameObject
     {
         public int TestProperty { get; set; } = 0;
+
         public override void Init()
         {
             Position = new Vector2(MainProcess.Settings.ViewportSize.X / 2, MainProcess.Settings.ViewportSize.Y / 2);
-            Scale = new Vector2(0.3f, 0.3f);
-            RotationDegrees = 90f;
+            Scale = new Vector2(1f, 1f);
+            RotationDegrees = 0f;
             Velocity = 0f;
-            Image = "Tial";
+            Image = "bullet1";
             base.Init();
         }
 

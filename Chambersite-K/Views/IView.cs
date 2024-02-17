@@ -23,6 +23,7 @@ namespace Chambersite_K.Views
         public int RenderOrder { get; set; }
         public RectangleF WorldBounds { get; set; }
         public void Init();
+        public void LoadResources();
         public void Frame(GameTime gameTime);
         public void Render();
     }

@@ -39,15 +39,19 @@ namespace Chambersite_K.GameObjects
 
         public void Frame(GameTime gameTime)
         {
-            foreach (GameObject gameObject in ObjectPool)
-                gameObject.Frame();
-            CollisionChecker.Update(gameTime);
+            for (int i = 0; i < ObjectPool.Count; i++)
+            {
+                ObjectPool[i].Frame();
+            }
+            ObjectPool.RemoveAll(x => x.Status == GameObjectStatus.AwaitingDeletion);
         }
 
         public void Render()
         {
-            foreach (GameObject gameObject in ObjectPool)
-                gameObject.Render();
+            for (int i = 0; i<ObjectPool.Count; i++)
+            {
+                ObjectPool[i].Render();
+            }
         }
 
         public GameObject CreateGameObject<T>(IParentable parent, IView parentView, params object[] objectParams)

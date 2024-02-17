@@ -20,16 +20,16 @@ namespace Chambersite_K
         public SpriteBatch _spriteBatch;
         private ImGuiRenderer GUIRenderer;
         public KeyboardState currentKeyboardState;
-        public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         public FrameCounter UpdateFPSCounter = new FrameCounter();
         public FrameCounter DrawFPSCounter = new FrameCounter();
+        public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Resources and Objects
         public static Settings Settings { get; set; } = new Settings();
 
         public List<Resource> GlobalResource { get; set; } = new List<Resource>();
         public GameObjectPool GlobalObjectPool { get; set; }
-        internal IView? LoadingScreen { get; set; }
+        internal LoadingScreen? LoadingScreen { get; set; }
         internal List<IView> ActiveViews { get; set; } = new List<IView>();
         private HashSet<Guid> UsedGuids = new HashSet<Guid>();
         #endregion
@@ -72,11 +72,12 @@ namespace Chambersite_K
             base.Initialize();
             _IsInitialized = true;
             Logger.Debug("MainProcess was initialized correctly.");
-            foreach (IView view in ActiveViews)
+            LoadingScreen.Init();
+            /*foreach (IView view in ActiveViews)
             {
                 if (!view.WasInitialized)
                     view.Init();
-            }
+            }*/
         }
 
         protected override void LoadContent()
@@ -94,8 +95,12 @@ namespace Chambersite_K
             if (currentKeyboardState.IsKeyPressedOnce(ToggleImGUI))
                 IsImGuiActive = !IsImGuiActive;
 
+            LoadingScreen?.Frame(gameTime);
             foreach (IView view in ActiveViews)
-                if (view.ViewStatus == ViewStatus.Active) view.Frame(gameTime);
+            {
+                if (!view.WasInitialized && LoadingScreen == null) view.Init();
+                /*if (view.ViewStatus == ViewStatus.Active)*/ view.Frame(gameTime);
+            }
             GlobalObjectPool.Frame(gameTime);
 
             currentKeyboardState.UpdatePreviousKeyboardState();
@@ -114,6 +119,7 @@ namespace Chambersite_K
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin(transformMatrix: Settings.GetViewportScale());
 
+            LoadingScreen?.Render();
             RenderViewsByType();
 
             _spriteBatch.End();
@@ -128,7 +134,7 @@ namespace Chambersite_K
             foreach (ViewType type in types)
             {
                 foreach (IView view in ActiveViews.FindAll(x => x.vType == type))
-                    if (view.ViewStatus != ViewStatus.Hidden) view.Render();
+                    if (view.ViewStatus != ViewStatus.Hidden /*&& view.ViewStatus != ViewStatus.AwaitingInit*/) view.Render();
             }
         }
 
@@ -163,6 +169,8 @@ namespace Chambersite_K
         public IView AddView<T>(params object[] viewParams)
         {
             IView view = (IView)Activator.CreateInstance(typeof(T), args: viewParams);
+            if (view == null)
+                throw new ApplicationException($"The View with a type of {typeof(T).Name} couldn't be created.");
             if (view.vType == ViewType.Stage && ActiveViews.Any(x => x.vType == ViewType.Stage))
                 throw new InvalidViewOperationException("Multiple stages cannot co-exist. If you wish to switch to another stage, please use the correct method.");
             else if (view.vType == ViewType.Background && ActiveViews.Any(x => x.vType == ViewType.Background))
@@ -179,6 +187,18 @@ namespace Chambersite_K
 
             ActiveViews.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
             return view;
+        }
+
+        public LoadingScreen SetLoadingScreen<T>()
+        {
+            if (LoadingScreen != null)
+            {
+                throw new ApplicationException("A Loading Screen already exists, cannot create another one");
+            }
+            LoadingScreen loader = (LoadingScreen)Activator.CreateInstance(typeof(T));
+            loader.Parent = this;
+            this.LoadingScreen = loader;
+            return loader;
         }
 
         private void GenerateGuid(ref IView v)

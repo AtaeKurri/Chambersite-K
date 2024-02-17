@@ -29,7 +29,7 @@ namespace Chambersite_K.GameObjects
     {
         Active,
         Paused,
-        Invalid
+        AwaitingDeletion,
     }
 
     // GameObjects should never try to load resources from themselves
@@ -159,18 +159,18 @@ namespace Chambersite_K.GameObjects
 
         public virtual void Delete()
         {
-            if (Status == GameObjectStatus.Invalid)
+            if (Status == GameObjectStatus.AwaitingDeletion)
                 return;
-            Status = GameObjectStatus.Invalid;
-            OnDestroy();
+            Status = GameObjectStatus.AwaitingDeletion;
+            OnDestroy.Invoke();
         }
 
         public virtual void Kill()
         {
-            if (Status == GameObjectStatus.Invalid)
+            if (Status == GameObjectStatus.AwaitingDeletion)
                 return;
-            Status = GameObjectStatus.Invalid;
-            OnDestroy();
+            Status = GameObjectStatus.AwaitingDeletion;
+            OnDestroy.Invoke();
         }
 
         public virtual void OnCollision(CollisionEventArgs collisionInfo)

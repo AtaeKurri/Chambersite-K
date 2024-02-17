@@ -22,6 +22,7 @@ namespace Chambersite_K.Views
 
     public enum ViewStatus
     {
+        AwaitingInit,
         Active,
         Paused,
         Hidden
@@ -37,7 +38,7 @@ namespace Chambersite_K.Views
         /// </summary>
         public ViewType vType { get; private set; }
         public Guid? Id { get; set; } = null;
-        public ViewStatus ViewStatus { get; set; } = ViewStatus.Active;
+        public ViewStatus ViewStatus { get; set; } = ViewStatus.AwaitingInit;
         public bool WasInitialized { get; private set; } = false;
         public long Timer { get; set; } = 0;
         public int RenderOrder { get; set; } = -999_999_999;
@@ -84,9 +85,15 @@ namespace Chambersite_K.Views
             return $"\"{InternalName}\" ({GetType().Name}:{Id})";
         }
 
+        public virtual void LoadResources()
+        {
+
+        }
+
         public virtual void Init()
         {
             WasInitialized = true;
+            ViewStatus = ViewStatus.Active;
             Logger.Debug("View {0} Initialized.", InternalName);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Chambersite_K.GameObjects;
+using Chambersite_K.GameObjects.Coroutines;
 using Chambersite_K.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,7 +43,7 @@ namespace Chambersite_K.Views
         public bool WasInitialized { get; private set; } = false;
         public long Timer { get; set; } = 0;
         public int RenderOrder { get; set; } = -999_999_999;
-        public RectangleF WorldBounds { get; set; } = new RectangleF(MainProcess.Settings.ViewportSize.X, MainProcess.Settings.ViewportSize.Y, 384, 224);
+        public ViewBounds WorldBounds { get; set; } = new ViewBounds();
 
         /// <summary>
         /// Stores all the resources loaded from type view scope. Access it directly to render standalone images.<br/>
@@ -57,6 +58,7 @@ namespace Chambersite_K.Views
         public object Parent { get; set; } = GAME; // TODO: Allow for other view to be the parent (for nesting scenes.)
         public IView ParentView { get; set; }
         public List<GameObject> Children { get; set; } = new List<GameObject>();
+        public ICoroutineManager CoroutineManager { get; set; }
 
         public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -64,6 +66,7 @@ namespace Chambersite_K.Views
         {
             ParentView = this;
             LocalObjectPool = new GameObjectPool(this);
+            CoroutineManager = new CoroutineManager(this);
 
             ViewTypeAttribute viewTypeAttr = (ViewTypeAttribute)Attribute.GetCustomAttribute(GetType(), typeof(ViewTypeAttribute));
             vType = (viewTypeAttr != null) ? viewTypeAttr.ViewType : ViewType.Stage;
@@ -159,7 +162,9 @@ namespace Chambersite_K.Views
 
         public void MoveWorldBounds(RectangleF bounds)
         {
-            WorldBounds = bounds;
+            WorldBounds = ViewBounds.FromRectangleF(bounds);
         }
+
+        public bool IsValid() => (ViewStatus != ViewStatus.AwaitingInit || ViewStatus != ViewStatus.Paused);
     }
 }

@@ -53,6 +53,7 @@
     <None Remove="Assets\misc\img_void.png" />
     <None Remove="Assets\misc\misc.png" />
     <None Remove="Assets\misc\particles.png" />
+    <None Remove="Assets\player\motae.png" />
     <None Remove="Assets\se\se_alert.wav" />
     <None Remove="Assets\se\se_astralup.wav" />
     <None Remove="Assets\se\se_big.wav" />
@@ -291,6 +292,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\misc\particles.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\player\motae.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\se\se_alert.wav">
@@ -653,10 +657,6 @@
     <Content Include="Assets\UI\ui_bg_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Helpers\" />
   </ItemGroup>
 
   <ItemGroup>

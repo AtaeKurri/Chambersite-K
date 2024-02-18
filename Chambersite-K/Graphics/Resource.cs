@@ -225,5 +225,14 @@ namespace Chambersite_K.Graphics
             else
                 throw new KeyNotFoundException($"This resource '{resourceName}' doesn't exist with the type '{typeof(T)}'.");
         }
+
+        public static void Draw(this SpriteBatch spriteBatch, Resource resource, Vector2 position)
+        {
+            if (resource.Res is Texture2D)
+            {
+                Vector2 origin = new Vector2((resource.Res as Texture2D).Width / 2, (resource.Res as Texture2D).Height / 2);
+                GAME._spriteBatch.Draw((Texture2D)resource.Res, position, null, Color.White, 0f, origin, Vector2.One, SpriteEffects.None, 0);
+            }
+        }
     }
 }

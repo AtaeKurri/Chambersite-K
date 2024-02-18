@@ -1,4 +1,5 @@
 ﻿using Chambersite_K.GameObjects;
+using Chambersite_K.GameObjects.Coroutines;
 using Chambersite_K.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Chambersite_K.Views
 {
-    public interface IView : IParentable, IResourceHolder
+    public interface IView : IParentable, IResourceHolder, ICoroutineConsumer
     {
         public string InternalName { get; set; }
         public Guid? Id { get; set; }
@@ -21,7 +22,7 @@ namespace Chambersite_K.Views
         public bool WasInitialized { get; }
         public long Timer { get; set; }
         public int RenderOrder { get; set; }
-        public RectangleF WorldBounds { get; set; }
+        public ViewBounds WorldBounds { get; set; }
         public void Init();
         public void LoadResources();
         public void Frame(GameTime gameTime);

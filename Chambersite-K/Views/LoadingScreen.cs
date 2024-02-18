@@ -59,6 +59,7 @@ namespace Chambersite_K.Views
             /*foreach (IView view in Parent.ActiveViews)
                 if (!view.WasInitialized)
                     view.Init();*/
+            AreResourceLoaded = true;
             Parent.LoadingScreen = null;
         }
 

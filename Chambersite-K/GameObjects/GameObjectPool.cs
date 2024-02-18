@@ -34,7 +34,7 @@ namespace Chambersite_K.GameObjects
         {
             IsLocalPool = true;
             Parent = parent;
-            CollisionChecker = new CollisionComponent(parent.WorldBounds);
+            CollisionChecker = new CollisionComponent(parent.WorldBounds.ToRectangleF());
         }
 
         public void Frame(GameTime gameTime)

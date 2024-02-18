@@ -1,4 +1,5 @@
-﻿using Chambersite_K.Graphics;
+﻿using Chambersite_K.GameObjects.Coroutines;
+using Chambersite_K.Graphics;
 using Chambersite_K.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,7 +34,7 @@ namespace Chambersite_K.GameObjects
     }
 
     // GameObjects should never try to load resources from themselves
-    public abstract class GameObject : IGameObject, IParentable, ICollisionActor
+    public abstract class GameObject : IGameObject, IParentable, ICollisionActor, ICoroutineConsumer
     {
         #region Properties
         public string InternalName { get; set; }
@@ -48,7 +49,12 @@ namespace Chambersite_K.GameObjects
         public int RenderOrder { get; set; } = -999_999_999;
         public IShapeF Bounds { get; set; }
 
+        //private Vector2 _position;
         public Vector2 Position { get; set; } = Vector2.Zero;
+        /*public Vector2 Position {
+            get { return _position - ParentView.WorldBounds.Position; }
+            set { _position = ParentView.WorldBounds.Position + value; }
+        }*/
         public float Velocity { get; set; } = 0.0f;
         public Vector2 Direction { get; private set; } = Vector2.Zero;
         public float Acceleration { get; set; } = 0.0f;
@@ -96,12 +102,16 @@ namespace Chambersite_K.GameObjects
         public delegate void DestroyEventHandler();
         public event DestroyEventHandler OnDestroy;
 
+        public ICoroutineManager CoroutineManager { get; set; }
+
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         #endregion
 
         public GameObject()
         {
+            CoroutineManager = new CoroutineManager(this);
+
             InternalNameAttribute goNameAttr = (InternalNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InternalNameAttribute));
             InternalName = (goNameAttr != null) ? goNameAttr.InternalName : $"{GetType().Name}";
 
@@ -124,6 +134,7 @@ namespace Chambersite_K.GameObjects
 
         public virtual void Init()
         {
+            Position = Vector2.Zero;
             try { ImageTexture = Resource.FindResource<Texture2D>(Image, ParentView); }
             catch (KeyNotFoundException) { ImageTexture = null; } // The ImageTexture wasn't set properly. This is normal for some objects so ignore.
         }
@@ -133,7 +144,7 @@ namespace Chambersite_K.GameObjects
             if (Status == GameObjectStatus.Active)
             {
                 Direction = new Vector2(MathF.Cos(Angle), MathF.Sin(Angle));
-                Position += Direction * Velocity;
+                //Position += Direction * Velocity;
                 Timer++;
             }
         }
@@ -177,6 +188,8 @@ namespace Chambersite_K.GameObjects
         {
             Logger.Debug("Collided");
         }
+
+        public void Move(Vector2 movement) => Position = movement;
 
         /// <summary>
         /// Creates a <see cref="GameObject"/> and adds it as a Child of this <see cref="IView"/>.<br/>
@@ -223,5 +236,7 @@ namespace Chambersite_K.GameObjects
             orientation = orientation * (MathF.PI / 180.0f);
             return orientation;
         }
+
+        public bool IsValid() => Status == GameObjectStatus.Active;
     }
 }

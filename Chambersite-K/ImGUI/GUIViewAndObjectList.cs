@@ -148,9 +148,9 @@ namespace Chambersite_K.ImGUI
 
         private void DisplayResourcePool(List<Resource> resPool)
         {
+            ImGui.Text($"Resource Count: {resPool.Count}");
             foreach (Resource resource in resPool)
             {
-                ImGui.Text($"Resource Count: {resPool.Count}");
                 if (ImGui.TreeNode($"{resource.Name}"))
                 {
                     ImGui.Text($"Indentifier: {resource.Name}");

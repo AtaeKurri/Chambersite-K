@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
 
 using Chambersite_K.Views;
 using Chambersite_K.Graphics;
@@ -9,7 +8,6 @@ using Chambersite_K.GameObjects;
 using ImGuiNET;
 using Chambersite_K.ImGUI;
 using Chambersite_K.GameSettings;
-using System;
 
 namespace Chambersite_K
 {
@@ -25,6 +23,7 @@ namespace Chambersite_K
         public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Resources and Objects
+
         public static Settings Settings { get; set; } = new Settings();
 
         public List<Resource> GlobalResource { get; set; } = new List<Resource>();
@@ -32,8 +31,10 @@ namespace Chambersite_K
         internal LoadingScreen? LoadingScreen { get; set; }
         internal List<IView> ActiveViews { get; set; } = new List<IView>();
         private HashSet<Guid> UsedGuids = new HashSet<Guid>();
+
         #endregion
         #region ImGui Windows
+
         public bool AllowImGui = false;
         private bool IsImGuiActive = true;
 
@@ -43,6 +44,7 @@ namespace Chambersite_K
         public Keys ToggleImGUI = Keys.F3;
         private GUIViewAndObjectList GUI_ViewAndObjectList = new GUIViewAndObjectList();
         private GUIFrameStats GUI_FrameStats = new GUIFrameStats();
+
         #endregion
 
         public MainProcess(bool allowImGui)
@@ -56,6 +58,8 @@ namespace Chambersite_K
             IsMouseVisible = Settings.IsMouseVisible;
             AllowImGui = allowImGui;
         }
+
+        #region Game Loop
 
         protected override void Initialize()
         {
@@ -99,7 +103,7 @@ namespace Chambersite_K
             foreach (IView view in ActiveViews)
             {
                 if (!view.WasInitialized && LoadingScreen == null) view.Init();
-                /*if (view.ViewStatus == ViewStatus.Active)*/ view.Frame(gameTime);
+                view.Frame(gameTime);
             }
             GlobalObjectPool.Frame(gameTime);
 
@@ -117,7 +121,14 @@ namespace Chambersite_K
                 return;
             DrawFPSCounter.Update(gameTime);
             GraphicsDevice.Clear(Color.Black);
-            _spriteBatch.Begin(transformMatrix: Settings.GetViewportScale());
+            _spriteBatch.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.NonPremultiplied,
+                Settings.SampleState,
+                null,
+                null,
+                null,
+                Settings.GetViewportScale());
 
             LoadingScreen?.Render();
             RenderViewsByType();
@@ -128,35 +139,20 @@ namespace Chambersite_K
             DrawImGui(gameTime);
         }
 
+        public static KeyboardState GetKeyboardState() => Keyboard.GetState();
+
+        #endregion
+        #region Views and GameObjects
+
         private void RenderViewsByType()
         {
             ViewType[] types = (ViewType[])Enum.GetValues(typeof(ViewType));
             foreach (ViewType type in types)
             {
                 foreach (IView view in ActiveViews.FindAll(x => x.vType == type))
-                    if (view.ViewStatus != ViewStatus.Hidden /*&& view.ViewStatus != ViewStatus.AwaitingInit*/) view.Render();
+                    if (view.ViewStatus != ViewStatus.Hidden) view.Render();
             }
         }
-
-        private void UpdateViewport(object sender, EventArgs e)
-        {
-            Viewport viewport = GraphicsDevice.Viewport;
-            float aspectRatio = Settings.ViewportSize.X / Settings.ViewportSize.Y;
-            int width = viewport.Width;
-            int height = (int)(width / aspectRatio + 0.5f);
-
-            if (height > viewport.Height)
-            {
-                height = viewport.Height;
-                width = (int)(height * aspectRatio + 0.5f);
-            }
-
-            int x = (viewport.Width / 2) - (width / 2);
-            int y = (viewport.Height / 2) - (height / 2);
-
-            GraphicsDevice.Viewport = new Viewport(x, y, width, height);
-        }
-
 
         /// <summary>
         /// Creates a new instance of <typeparamref name="T"/>.<br/>
@@ -189,6 +185,17 @@ namespace Chambersite_K
             return view;
         }
 
+        private void GenerateGuid(ref IView v)
+        {
+            Guid uuid = Guid.NewGuid();
+
+            while (UsedGuids.Contains(uuid))
+                uuid = Guid.NewGuid();
+
+            v.Id = uuid;
+            UsedGuids.Add(uuid);
+        }
+
         public LoadingScreen SetLoadingScreen<T>()
         {
             if (LoadingScreen != null)
@@ -199,17 +206,6 @@ namespace Chambersite_K
             loader.Parent = this;
             this.LoadingScreen = loader;
             return loader;
-        }
-
-        private void GenerateGuid(ref IView v)
-        {
-            Guid uuid = Guid.NewGuid();
-
-            while (UsedGuids.Contains(uuid))
-                uuid = Guid.NewGuid();
-
-            v.Id = uuid;
-            UsedGuids.Add(uuid);
         }
 
         /// <summary>
@@ -232,7 +228,27 @@ namespace Chambersite_K
             return view;
         }
 
-        public static KeyboardState GetKeyboardState() => Keyboard.GetState();
+        private void UpdateViewport(object sender, EventArgs e)
+        {
+            Viewport viewport = GraphicsDevice.Viewport;
+            float aspectRatio = Settings.ViewportSize.X / Settings.ViewportSize.Y;
+            int width = viewport.Width;
+            int height = (int)(width / aspectRatio + 0.5f);
+
+            if (height > viewport.Height)
+            {
+                height = viewport.Height;
+                width = (int)(height * aspectRatio + 0.5f);
+            }
+
+            int x = (viewport.Width / 2) - (width / 2);
+            int y = (viewport.Height / 2) - (height / 2);
+
+            GraphicsDevice.Viewport = new Viewport(x, y, width, height);
+        }
+
+        #endregion
+        #region ImGui
 
         private void DrawImGui(GameTime gameTime)
         {
@@ -259,5 +275,7 @@ namespace Chambersite_K
 
             GUIRenderer.AfterLayout();
         }
+
+        #endregion
     }
 }

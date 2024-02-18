@@ -36,6 +36,7 @@ namespace TestGame
             : base()
         {
             AddResourceLoader<BulletResourceLoader>();
+            AddResourceLoader<PlayerResourceLoader>();
         }
     }
 
@@ -48,7 +49,7 @@ namespace TestGame
             LoadLocalResource<Texture2D>("Tial", "Assets/Tial.png");
             //Resource.LoadGlobalResource<Texture2D>("Tial", "Tial.png");
             CreateGameObject<TestObject>();
-            CreateGameObject<Player>();
+            CreateGameObject<MotaePlayer>();
             base.Init();
         }
     }
@@ -73,6 +74,18 @@ namespace TestGame
 
         public override void Init()
         {
+            base.Init();
+        }
+    }
+
+    [InternalName("Motae Player")]
+    public class MotaePlayer : Player
+    {
+        public override void Init()
+        {
+            Position = new Vector2(MainProcess.Settings.ViewportSize.X / 2, MainProcess.Settings.ViewportSize.Y / 2);
+            Scale = new Vector2(.4f, .4f);
+            Image = "motae_player";
             base.Init();
         }
     }

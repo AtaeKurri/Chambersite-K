@@ -135,7 +135,7 @@ namespace Chambersite_K.GameObjects
         public virtual void Init()
         {
             Position = Vector2.Zero;
-            try { ImageTexture = Resource<Texture2D>.FindResource(Image, ParentView); }
+            try { ImageTexture = ParentView.FindResource<Texture2D>(Image); }
             catch (KeyNotFoundException) { ImageTexture = null; } // The ImageTexture wasn't set properly. This is normal for some objects so ignore.
         }
 

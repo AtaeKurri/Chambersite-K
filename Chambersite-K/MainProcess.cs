@@ -11,7 +11,7 @@ using Chambersite_K.GameSettings;
 
 namespace Chambersite_K
 {
-    public class MainProcess : Game
+    public class MainProcess : Game, IResourceHolder
     {
         private bool _IsInitialized = false;
         public GraphicsDeviceManager _graphics;
@@ -26,11 +26,13 @@ namespace Chambersite_K
 
         public static Settings Settings { get; set; } = new Settings();
 
-        public List<IResource> GlobalResource { get; set; } = new List<IResource>();
+        public List<IResource> ResourcePool { get; set; } = new List<IResource>();
         public GameObjectPool GlobalObjectPool { get; set; }
         internal LoadingScreen? LoadingScreen { get; set; }
         internal List<IView> ActiveViews { get; set; } = new List<IView>();
         private HashSet<Guid> UsedGuids = new HashSet<Guid>();
+
+        public List<IResource> GetGlobalResources() => ResourcePool;
 
         #endregion
         #region ImGui Windows

@@ -49,7 +49,7 @@ namespace Chambersite_K.Views
         /// Stores all the resources loaded from type view scope. Access it directly to render standalone images.<br/>
         /// See <see cref="ResourceExtensions.FindResource{T}(List{IResource}, string)"/> to find resources inside this List more easily.
         /// </summary>
-        public List<IResource> LocalResources { get; set; } = new List<IResource>();
+        public List<IResource> ResourcePool { get; set; } = new List<IResource>();
         public GameObjectPool LocalObjectPool { get; set; }
 
         /// <summary>
@@ -90,7 +90,6 @@ namespace Chambersite_K.Views
 
         public virtual void LoadResources()
         {
-
         }
 
         public virtual void Init()
@@ -117,15 +116,7 @@ namespace Chambersite_K.Views
             LocalObjectPool.Render();
         }
 
-        public Resource<T> LoadLocalResource<T>(string name, string filepath)
-        {
-            Resource<T> res = Resource<T>.Load(name, filepath);
-            if (res != null)
-                LocalResources.Add(res);
-            return res;
-        }
-
-        public List<IResource> GetGlobalResources() => GAME.GlobalResource;
+        public List<IResource> GetGlobalResources() => GAME.ResourcePool;
 
         /// <summary>
         /// Creates a <see cref="GameObject"/> and adds it as a Child of this <see cref="IView"/>.<br/>

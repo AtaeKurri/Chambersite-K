@@ -56,9 +56,9 @@ namespace Chambersite_K.ImGUI
                 if (ImGui.BeginTabItem("Resources"))
                 {
                     List<Tuple<string, List<IResource>>> resourceHolders = new List<Tuple<string, List<IResource>>>
-                    { new Tuple<string, List<IResource>>("Global Pool", GAME.GlobalResource) };
+                    { new Tuple<string, List<IResource>>("Global Pool", GAME.ResourcePool) };
                     foreach (IView view in GAME.ActiveViews)
-                        resourceHolders.Add(new Tuple<string, List<IResource>>(view.ToString(), view.LocalResources));
+                        resourceHolders.Add(new Tuple<string, List<IResource>>(view.ToString(), view.ResourcePool));
 
                     foreach (Tuple<string, List<IResource>> container in resourceHolders)
                     {
@@ -166,6 +166,9 @@ namespace Chambersite_K.ImGUI
                         case Type when type == typeof(Texture2D):
                             DisplayResourceTexture2D((Texture2D)resource.GetRes());
                             break;
+                        case Type when type == typeof(TextureAtlas):
+                            DisplayResourceTextureAtlas((TextureAtlas)resource.GetRes());
+                            break;
                     }
                     ImGui.TreePop();
                 }
@@ -177,6 +180,11 @@ namespace Chambersite_K.ImGUI
         private void DisplayResourceTexture2D(Texture2D texture)
         {
             ImGui.Text($"Texture Size: {new Vector2(texture.Width, texture.Height)}");
+        }
+
+        private void DisplayResourceTextureAtlas(TextureAtlas texture)
+        {
+
         }
 
         #endregion

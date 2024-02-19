@@ -8,9 +8,9 @@ namespace Chambersite_K.Graphics
 {
     public interface IResourceHolder
     {
-        public List<IResource> LocalResources { get; set; }
+        public List<IResource> ResourcePool { get; set; }
 
-        public Resource<T> LoadLocalResource<T>(string name, string filepath);
+        //public Resource<T> LoadLocalResource<T>(string name, string filepath);
         public List<IResource> GetGlobalResources();
     }
 }

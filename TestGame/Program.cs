@@ -46,8 +46,8 @@ namespace TestGame
     {
         public override void Init()
         {
-            LoadLocalResource<Texture2D>("Tial", "Assets/Tial.png");
-            LoadLocalResource<Texture2D>("motae_player", "Assets/player/motae.png");
+            this.LoadResource<Texture2D>("Tial", "Assets/Tial.png");
+            this.LoadResource<Texture2D>("motae_player", "Assets/player/motae.png");
             //Resource.LoadGlobalResource<Texture2D>("Tial", "Tial.png");
             CreateGameObject<TestObject>();
             CreateGameObject<MotaePlayer>();
@@ -61,7 +61,7 @@ namespace TestGame
     {
         public override void Init()
         {
-            LoadLocalResource<Texture2D>("UI", "Assets/ui_bg.png");
+            this.LoadResource<Texture2D>("UI", "Assets/ui_bg.png");
             CreateGameObject<UIBG>();
             base.Init();
         }

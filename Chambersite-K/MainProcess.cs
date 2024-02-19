@@ -26,7 +26,7 @@ namespace Chambersite_K
 
         public static Settings Settings { get; set; } = new Settings();
 
-        public List<Resource> GlobalResource { get; set; } = new List<Resource>();
+        public List<IResource> GlobalResource { get; set; } = new List<IResource>();
         public GameObjectPool GlobalObjectPool { get; set; }
         internal LoadingScreen? LoadingScreen { get; set; }
         internal List<IView> ActiveViews { get; set; } = new List<IView>();

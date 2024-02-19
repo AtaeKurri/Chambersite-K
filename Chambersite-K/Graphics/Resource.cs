@@ -13,15 +13,16 @@ using System.Threading.Tasks;
 
 namespace Chambersite_K.Graphics
 {
-    public sealed class Resource
+    public sealed class Resource<T> : IResource
     {
         public string Name { get; set; }
-        public object Res { get; set; }
+        public T Res { get; set; }
+        public object GetRes() => Res;
         public string Path { get; set; }
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public Resource(string name, object res, string path)
+        public Resource(string name, T res, string path)
         {
             Name = name;
             Res = res;
@@ -29,13 +30,17 @@ namespace Chambersite_K.Graphics
             Logger.Info("Resource of type {0}: '{1}' ({2}) loaded.", Res.GetType().Name, Name, Path);
         }
 
+        public Resource(string name, T res)
+            : this(name, res, "File in memory")
+        { }
+
         public override string ToString()
         {
             return $"\"{Name}\" ({Res.GetType().Name})";
         }
 
         // TODO: Implémenter un check pour savoir si une resource du même nom (et type) existe, si oui, throw une Exception.
-        public static Resource Load<T>(string resourceName, string filePath)
+        public static Resource<T> Load(string resourceName, string filePath)
         {
             filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
             if (!File.Exists(filePath))
@@ -51,15 +56,15 @@ namespace Chambersite_K.Graphics
                     {
                         // TODO: Ajouter tous les types pouvant être lus par un FileStream.
                         case Type when type == typeof(Texture2D):
-                            return new Resource(resourceName, (T)Convert.ChangeType(_loadTexture2DFromStream(fs), typeof(T)), filePath);
+                            return new Resource<T>(resourceName, (T)Convert.ChangeType(_loadTexture2DFromStream(fs), typeof(T)), filePath);
                         case Type when type == typeof(Model):
-                            return new Resource(resourceName, (T)Convert.ChangeType(_LoadModelFromFile(filePath), typeof(T)), filePath);
+                            return new Resource<T>(resourceName, (T)Convert.ChangeType(_LoadModelFromFile(filePath), typeof(T)), filePath);
                         case Type when type == typeof(TTFFont):
-                            return new Resource(resourceName, (T)Convert.ChangeType(new TTFFont(filePath), typeof(T)), filePath);
+                            return new Resource<T>(resourceName, (T)Convert.ChangeType(new TTFFont(filePath), typeof(T)), filePath);
                         case Type when type == typeof(Song):
-                            return new Resource(resourceName, (T)Convert.ChangeType(Song.FromUri(resourceName, new Uri(filePath)), typeof(T)), filePath);
+                            return new Resource<T>(resourceName, (T)Convert.ChangeType(Song.FromUri(resourceName, new Uri(filePath)), typeof(T)), filePath);
                         case Type when type == typeof(SoundEffect):
-                            return new Resource(resourceName, (T)Convert.ChangeType(_loadSoundEffectFromStream(fs), typeof(T)), filePath);
+                            return new Resource<T>(resourceName, (T)Convert.ChangeType(_loadSoundEffectFromStream(fs), typeof(T)), filePath);
                         default:
                             throw new ArgumentException("The type provided is not a valid resource type.");
                     }
@@ -75,6 +80,13 @@ namespace Chambersite_K.Graphics
                     fs.Close();
                 }
             }
+        }
+
+        public static Resource<T> Load(Texture2D texture, string atlasName, Vector2 position, Vector2 size, Vector2 columnsAndRows)
+        {
+            TextureAtlas atlas = new TextureAtlas(texture, position, size, columnsAndRows);
+            Resource<T> res = new Resource<T>(atlasName, (T)Convert.ChangeType(atlas, typeof(TextureAtlas)));
+            return res;
         }
 
         private static Texture2D _loadTexture2DFromStream(FileStream fs) => Texture2D.FromStream(GAME._graphics.GraphicsDevice, fs);
@@ -128,9 +140,9 @@ namespace Chambersite_K.Graphics
         /// <param name="name">The resource name, used to identify the resource among other files</param>
         /// <param name="filepath">The relative filepath to the resource</param>
         /// <returns></returns>
-        public static Resource LoadGlobalResource<T>(string name, string filepath)
+        public static Resource<T> LoadGlobalResource(string name, string filepath)
         {
-            Resource res = Load<T>(name, filepath);
+            Resource<T> res = Load(name, filepath);
             if (res != null)
                 GAME.GlobalResource.Add(res);
             return res;
@@ -145,15 +157,15 @@ namespace Chambersite_K.Graphics
         /// <param name="name">The name identifier of the resource</param>
         /// <returns>A <see cref="Resource"/> with the matching name and type.</returns>
         /// <exception cref="KeyNotFoundException">The resource is not found in the local or global resources lists.</exception>
-        public static Resource FindResource<T>(string resourceName, IResourceHolder localResourceSource=null)
+        public static Resource<T> FindResource(string resourceName, IResourceHolder localResourceSource=null)
         {
-            Resource foundRes = null;
+            Resource<T> foundRes = null;
             // Will attempt to find in local resources first, and if not found, will try into the global dict, to save on resources.
             if (localResourceSource != null)
-                 foundRes = localResourceSource.LocalResources.Find(res => res.Res is T && res.Name == resourceName);
+                 foundRes = (Resource<T>)localResourceSource.LocalResources.Find(res => res.GetRes() is T && res.Name == resourceName);
             if (foundRes == null)
             {
-                foundRes = GAME.GlobalResource.Find(res => res.Res is T && res.Name == resourceName);
+                foundRes = (Resource<T>)GAME.GlobalResource.Find(res => res.GetRes() is T && res.Name == resourceName);
                 if (foundRes == null)
                     throw new KeyNotFoundException($"This resource '{resourceName}' doesn't exist with the type '{typeof(T)}'.");
             }
@@ -193,7 +205,7 @@ namespace Chambersite_K.Graphics
             if (Res is Texture2D)
             {
                 Vector2 origin = new Vector2((Res as Texture2D).Width/2, (Res as Texture2D).Height / 2);
-                GAME._spriteBatch.Draw((Texture2D)Res, position, null, color, rotation, origin, scale, spriteEffects, 0);
+                GAME._spriteBatch.Draw((Texture2D)GetRes(), position, null, color, rotation, origin, scale, spriteEffects, 0);
             }
         }
 
@@ -202,7 +214,7 @@ namespace Chambersite_K.Graphics
             if (Res is Texture2D)
             {
                 Vector2 origin = new Vector2((Res as Texture2D).Width / 2, (Res as Texture2D).Height / 2);
-                GAME._spriteBatch.Draw((Texture2D)Res, position, originRect, Color.White, rotation, origin, SpriteEffects.None, 0);
+                GAME._spriteBatch.Draw((Texture2D)GetRes(), position, originRect, Color.White, rotation, origin, SpriteEffects.None, 0);
             }
         }
     }
@@ -217,22 +229,19 @@ namespace Chambersite_K.Graphics
         /// <param name="resourceName">The resource's name as given in the <see cref="Resource.Load{T}(string, string)"/> method</param>
         /// <returns>The resource's data</returns>
         /// <exception cref="KeyNotFoundException">Thrown if no resource with the given type and/or name exists</exception>
-        public static Resource FindResource<T>(this List<Resource> list, string resourceName)
+        public static Resource<T> FindResource<T>(this List<Resource<T>> list, string resourceName)
         {
-            Resource foundRes = list.Find(res => res.Res is T && res.Name == resourceName);
+            Resource<T> foundRes = list.Find(res => res.Res is T && res.Name == resourceName);
             if (foundRes != null)
                 return foundRes;
             else
                 throw new KeyNotFoundException($"This resource '{resourceName}' doesn't exist with the type '{typeof(T)}'.");
         }
 
-        public static void Draw(this SpriteBatch spriteBatch, Resource resource, Vector2 position)
+        public static void Draw(this SpriteBatch spriteBatch, Resource<Texture2D> resource, Vector2 position)
         {
-            if (resource.Res is Texture2D)
-            {
-                Vector2 origin = new Vector2((resource.Res as Texture2D).Width / 2, (resource.Res as Texture2D).Height / 2);
-                GAME._spriteBatch.Draw((Texture2D)resource.Res, position, null, Color.White, 0f, origin, Vector2.One, SpriteEffects.None, 0);
-            }
+            Vector2 origin = new Vector2(resource.Res.Width / 2, resource.Res.Height / 2);
+            GAME._spriteBatch.Draw(resource.Res, position, null, Color.White, 0f, origin, Vector2.One, SpriteEffects.None, 0);
         }
     }
 }

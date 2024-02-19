@@ -19,7 +19,7 @@ namespace Chambersite_K.Views
         public MainProcess Parent { get; set; }
         public List<GlobalResourceLoader> ResourceLoaders { get; set; } = new List<GlobalResourceLoader>();
         public bool AreResourceLoaded { get; set; } = false;
-        public List<Resource> LocalResources { get; set; } = new List<Resource>();
+        public List<IResource> LocalResources { get; set; } = new List<IResource>();
         public int TotalResourcesLoadedNum { get; set; } = 0;
 
         public event ResourcesLoadedEventHandler ResourcesLoaded;
@@ -78,14 +78,14 @@ namespace Chambersite_K.Views
             ResourcesLoaded.Invoke();
         }
 
-        public Resource LoadLocalResource<T>(string name, string filepath)
+        public Resource<T> LoadLocalResource<T>(string name, string filepath)
         {
-            Resource res = Resource.Load<T>(name, filepath);
+            Resource<T> res = Resource<T>.Load(name, filepath);
             if (res != null)
                 LocalResources.Add(res);
             return res;
         }
 
-        public List<Resource> GetGlobalResources() => Parent.GlobalResource;
+        public List<IResource> GetGlobalResources() => Parent.GlobalResource;
     }
 }

@@ -65,7 +65,7 @@ namespace Chambersite_K.GameObjects
         /// the images in both the local and global resource pool, will display nothing if the image isn't found.
         /// </summary>
         public string? Image { get; set; } = null;
-        public Resource? ImageTexture { get; private set; } = null;
+        public Resource<Texture2D>? ImageTexture { get; private set; } = null;
 
         /// <summary>
         /// Differs from <see cref="Rotation"/> as this property is used for actual movement.
@@ -135,7 +135,7 @@ namespace Chambersite_K.GameObjects
         public virtual void Init()
         {
             Position = Vector2.Zero;
-            try { ImageTexture = Resource.FindResource<Texture2D>(Image, ParentView); }
+            try { ImageTexture = Resource<Texture2D>.FindResource(Image, ParentView); }
             catch (KeyNotFoundException) { ImageTexture = null; } // The ImageTexture wasn't set properly. This is normal for some objects so ignore.
         }
 

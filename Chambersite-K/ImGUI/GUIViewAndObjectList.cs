@@ -1,8 +1,11 @@
-﻿using Chambersite_K.GameObjects;
+﻿using Assimp.Unmanaged;
+using Chambersite_K.GameObjects;
 using Chambersite_K.Graphics;
 using Chambersite_K.Views;
 using Chambersite_K.World;
 using ImGuiNET;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -52,12 +55,12 @@ namespace Chambersite_K.ImGUI
                 }
                 if (ImGui.BeginTabItem("Resources"))
                 {
-                    List<Tuple<string, List<Resource>>> resourceHolders = new List<Tuple<string, List<Resource>>>
-                    { new Tuple<string, List<Resource>>("Global Pool", GAME.GlobalResource) };
+                    List<Tuple<string, List<IResource>>> resourceHolders = new List<Tuple<string, List<IResource>>>
+                    { new Tuple<string, List<IResource>>("Global Pool", GAME.GlobalResource) };
                     foreach (IView view in GAME.ActiveViews)
-                        resourceHolders.Add(new Tuple<string, List<Resource>>(view.ToString(), view.LocalResources));
+                        resourceHolders.Add(new Tuple<string, List<IResource>>(view.ToString(), view.LocalResources));
 
-                    foreach (Tuple<string, List<Resource>> container in resourceHolders)
+                    foreach (Tuple<string, List<IResource>> container in resourceHolders)
                     {
                         if (ImGui.CollapsingHeader($"{container.Item1}"))
                         {
@@ -146,20 +149,37 @@ namespace Chambersite_K.ImGUI
             }
         }
 
-        private void DisplayResourcePool(List<Resource> resPool)
+        private void DisplayResourcePool(List<IResource> resPool)
         {
             ImGui.Text($"Resource Count: {resPool.Count}");
-            foreach (Resource resource in resPool)
+            foreach (IResource resource in resPool)
             {
                 if (ImGui.TreeNode($"{resource.Name}"))
                 {
                     ImGui.Text($"Indentifier: {resource.Name}");
                     ImGui.Text($"File Path: {resource.Path}");
-                    ImGui.Text($"Internal Type: {resource.Res.GetType().Name}");
+                    ImGui.Text($"Internal Type: {resource.GetRes().GetType().Name}");
+
+                    Type type = resource.GetRes().GetType();
+                    switch (type)
+                    {
+                        case Type when type == typeof(Texture2D):
+                            DisplayResourceTexture2D((Texture2D)resource.GetRes());
+                            break;
+                    }
                     ImGui.TreePop();
                 }
             }
         }
+
+        #region Resource types display
+
+        private void DisplayResourceTexture2D(Texture2D texture)
+        {
+            ImGui.Text($"Texture Size: {new Vector2(texture.Width, texture.Height)}");
+        }
+
+        #endregion
 
         private void DisplayWorld3D(World3D world)
         {

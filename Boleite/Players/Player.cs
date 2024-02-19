@@ -14,14 +14,14 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Boleite.Players
 {
-    public class PlayerResourceLoader : GlobalResourceLoader
+    /*public class PlayerResourceLoader : GlobalResourceLoader
     {
         public override async Task<int> LoadResources()
         {
-            LoadResource<Texture2D>("motae_player", "Assets/player/motae.png");
+            Texture2D MotaeTexture = await LoadResource<Texture2D>("motae_player", "Assets/player/motae.png");
             return NumOfResourceLoaded;
         }
-    }
+    }*/
 
     public enum PlayerDeathState
     {

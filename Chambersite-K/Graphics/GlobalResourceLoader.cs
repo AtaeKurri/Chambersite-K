@@ -24,10 +24,11 @@ namespace Chambersite_K.Graphics
         /// <typeparam name="T">The resource internal type.</typeparam>
         /// <param name="resourceName">The identifier name for this resource.</param>
         /// <param name="filePath">The relative path to the resource's file.</param>
-        public void LoadResource<T>(string resourceName, string filePath)
+        public async Task<T> LoadResource<T>(string resourceName, string filePath)
         {
-            Resource.LoadGlobalResource<T>(resourceName, filePath);
+            Resource<T> res = Resource<T>.LoadGlobalResource(resourceName, filePath);
             NumOfResourceLoaded++;
+            return (T)Convert.ChangeType(res, typeof(T));
         }
     }
 }

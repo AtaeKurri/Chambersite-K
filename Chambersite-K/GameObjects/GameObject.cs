@@ -40,7 +40,7 @@ namespace Chambersite_K.GameObjects
         public string InternalName { get; set; }
         public Guid? Id { get; set; } = null;
         public GameObjectStatus Status { get; set; } = GameObjectStatus.Active;
-        public GameObjectGroup Group { get; set; } = GameObjectGroup.None;
+        public virtual GameObjectGroup Group { get; set; } = GameObjectGroup.None;
         /// <summary>
         /// Checks if this <see cref="GameObject"/> instance is local to a <see cref="View"/> or a Global object.
         /// </summary>
@@ -49,12 +49,7 @@ namespace Chambersite_K.GameObjects
         public int RenderOrder { get; set; } = -999_999_999;
         public IShapeF Bounds { get; set; }
 
-        //private Vector2 _position;
-        public Vector2 Position { get; set; } = Vector2.Zero;
-        /*public Vector2 Position {
-            get { return _position - ParentView.WorldBounds.Position; }
-            set { _position = ParentView.WorldBounds.Position + value; }
-        }*/
+        public Vector2 Position { get; set; }
         public float Velocity { get; set; } = 0.0f;
         public Vector2 Direction { get; private set; } = Vector2.Zero;
         public float Acceleration { get; set; } = 0.0f;
@@ -97,7 +92,8 @@ namespace Chambersite_K.GameObjects
         public IView ParentView { get; set; }
         public List<GameObject> Children { get; set; } = new List<GameObject>();
 
-        public bool CheckCollision { get; set; } = true;
+        public virtual bool CheckCollision { get; set; } = true;
+        public virtual bool CheckBound { get; set; } = true;
 
         public delegate void DestroyEventHandler();
         public event DestroyEventHandler OnDestroy;
@@ -134,7 +130,6 @@ namespace Chambersite_K.GameObjects
 
         public virtual void Init()
         {
-            Position = Vector2.Zero;
             try { ImageTexture = ParentView.FindResource<Texture2D>(Image); }
             catch (KeyNotFoundException) { ImageTexture = null; } // The ImageTexture wasn't set properly. This is normal for some objects so ignore.
         }
@@ -188,8 +183,6 @@ namespace Chambersite_K.GameObjects
         {
             Logger.Debug("Collided");
         }
-
-        public void Move(Vector2 movement) => Position = movement;
 
         /// <summary>
         /// Creates a <see cref="GameObject"/> and adds it as a Child of this <see cref="IView"/>.<br/>

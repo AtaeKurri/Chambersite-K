@@ -10,8 +10,8 @@ namespace Chambersite_K.Views
 {
     public struct ViewBounds
     {
-        public Vector2 Position { get; set; } = new Vector2(MainProcess.Settings.ViewportSize.X / 2, MainProcess.Settings.ViewportSize.Y / 2);
-        public Vector2 Size { get; set; } = new Vector2(384, 224);
+        public Vector2 Position { get; set; } = new Vector2(0, 0);
+        public Vector2 Size { get; set; } = new Vector2(384, 448);
         public Vector2 BoundsOffsets { get; set; } = new Vector2(8, 16);
 
         public readonly int WorldLeft => (int)(Position.X - (Size.X / 2));

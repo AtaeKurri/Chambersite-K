@@ -61,6 +61,7 @@ namespace Chambersite_K.GameObjects
             go.IsLocalToView = IsLocalPool;
             go.Parent = parent;
             go.ParentView = parentView;
+            go.Position = Vector2.Zero;
             ObjectPool.Add(go);
             go.Init();
             CollisionChecker.Insert(go);

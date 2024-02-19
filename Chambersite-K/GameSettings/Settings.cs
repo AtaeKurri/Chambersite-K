@@ -53,8 +53,9 @@ namespace Chambersite_K.GameSettings
         {
             float scaleX = WindowSize.X / ViewportSize.X;
             float scaleY = WindowSize.Y / ViewportSize.Y;
+            Matrix translationMatrix = Matrix.CreateTranslation(ViewportSize.X / 2, ViewportSize.Y / 2, 1f);
             Matrix scaleMatrix = Matrix.CreateScale(scaleX, scaleY, 1f);
-            return scaleMatrix;
+            return translationMatrix * scaleMatrix;
         }
 
         public void SetBGMVolume(float volume) => BGMVolume = MathHelper.Clamp(volume, 0f, 1f);

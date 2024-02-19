@@ -84,8 +84,7 @@ namespace TestGame
     {
         public override void Init()
         {
-            Position = new Vector2(MainProcess.Settings.ViewportSize.X / 2, MainProcess.Settings.ViewportSize.Y / 2);
-            Scale = new Vector2(.4f, .4f);
+            Scale = new Vector2(.1f, .1f);
             Image = "motae_player";
             base.Init();
         }
@@ -98,7 +97,6 @@ namespace TestGame
 
         public override void Init()
         {
-            Position = new Vector2(MainProcess.Settings.ViewportSize.X / 2, MainProcess.Settings.ViewportSize.Y / 2);
             Scale = new Vector2(1f, 1f);
             RotationDegrees = 0f;
             Velocity = 0f;
@@ -119,7 +117,6 @@ namespace TestGame
         public override void Init()
         {
             Image = "UI";
-            Position = new Vector2(MainProcess.Settings.ViewportSize.X / 2, MainProcess.Settings.ViewportSize.Y / 2);
             base.Init();
         }
     }

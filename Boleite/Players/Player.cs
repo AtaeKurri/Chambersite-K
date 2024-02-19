@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Chambersite_K;
+﻿using Chambersite_K;
 using Chambersite_K.GameObjects;
 using Chambersite_K.Graphics;
 using Chambersite_K.Views;
@@ -144,7 +139,7 @@ namespace Boleite.Players
             movementInfo.X = movementInfo.Z * movementInfo.X;
             movementInfo.Y = movementInfo.Z * movementInfo.Y;
 
-            Move(new Vector2(Position.X + movementInfo.X, Position.Y + movementInfo.Y));
+            Position += new Vector2(movementInfo.X, movementInfo.Y);
             Vector2 XOffset = new Vector2(ParentView.WorldBounds.WorldLeft + ParentView.WorldBounds.BoundsOffsets.X,
                 ParentView.WorldBounds.WorldRight - ParentView.WorldBounds.BoundsOffsets.X);
             Vector2 YOffset = new Vector2(ParentView.WorldBounds.WorldTop + ParentView.WorldBounds.BoundsOffsets.Y,
@@ -178,5 +173,10 @@ namespace Boleite.Players
         }
 
         #endregion
+        
+        public void Miss()
+        {
+
+        }
     }
 }

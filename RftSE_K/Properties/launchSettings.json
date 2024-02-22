@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "TestGame": {
+    "RftSE_K": {
       "commandName": "Project",
       "commandLineArgs": "--imgui --console"
     }

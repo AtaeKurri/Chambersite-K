@@ -49,7 +49,7 @@ namespace Chambersite_K.GameObjects
         public int RenderOrder { get; set; } = -999_999_999;
         public IShapeF Bounds { get; set; }
 
-        public Vector2 Position { get; set; }
+        public Vector2 Position { get; set; } = Vector2.Zero;
         public float Velocity { get; set; } = 0.0f;
         public Vector2 Direction { get; private set; } = Vector2.Zero;
         public float Acceleration { get; set; } = 0.0f;

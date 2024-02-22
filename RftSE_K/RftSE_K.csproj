@@ -1,0 +1,84 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <StartupObject></StartupObject>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseOutputPath>..\bin</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Bullets\bullet1.png" />
+    <None Remove="Assets\Bullets\bullet2.png" />
+    <None Remove="Assets\Bullets\bullet3.png" />
+    <None Remove="Assets\Bullets\bullet4.png" />
+    <None Remove="Assets\Bullets\bullet5.png" />
+    <None Remove="Assets\Bullets\bullet6.png" />
+    <None Remove="Assets\Bullets\bullet_ball_huge.png" />
+    <None Remove="Assets\Bullets\bullet_music.png" />
+    <None Remove="Assets\Bullets\bullet_water_drop.png" />
+    <None Remove="Assets\Bullets\etbreak.png" />
+    <None Remove="Assets\Bullets\Magic1.png" />
+    <None Remove="Assets\Players\Motae\motae.png" />
+    <None Remove="Assets\Players\Motae\MotaeBomb.png" />
+    <None Remove="Assets\Players\Motae\motae_shield.png" />
+    <None Remove="Assets\UI\ui_bg.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Bullets\bullet1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bullets\bullet2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bullets\bullet3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bullets\bullet4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bullets\bullet5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bullets\bullet6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bullets\bullet_ball_huge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bullets\bullet_music.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bullets\bullet_water_drop.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bullets\etbreak.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bullets\Magic1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Players\Motae\motae.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Players\Motae\MotaeBomb.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Players\Motae\motae_shield.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\UI\ui_bg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Boleite\Boleite.csproj" />
+    <ProjectReference Include="..\Chambersite-K\Chambersite_K.csproj" />
+  </ItemGroup>
+
+</Project>

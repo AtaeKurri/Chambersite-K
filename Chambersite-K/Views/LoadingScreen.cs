@@ -78,6 +78,11 @@ namespace Chambersite_K.Views
             ResourcesLoaded.Invoke();
         }
 
+        public void AddView<T>(params object[] viewParams)
+        {
+            GAME.AddView<T>(viewParams);
+        }
+
         public List<IResource> GetGlobalResources() => Parent.ResourcePool;
     }
 }

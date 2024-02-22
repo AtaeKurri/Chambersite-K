@@ -32,7 +32,7 @@ namespace Chambersite_K.GameSettings
         public virtual bool IsMouseVisible { get; set; } = true;
         public float BGMVolume { get; private set; } = .5f; // Always clamp from 0 to 100.
         public float SEVolume { get; private set; } = .5f; // Same, clamp from 0 to 100.
-        public SamplerState SampleState { get; set; } = SamplerState.PointWrap;
+        public SamplerState SampleState { get; set; } = SamplerState.LinearWrap;
 
         public Settings()
         {

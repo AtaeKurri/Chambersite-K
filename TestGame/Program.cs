@@ -15,7 +15,7 @@ namespace TestGame
     {
         static void Main(string[] args)
         {
-            using MainProcess game = new MainProcess(args);
+            using MainProcess game = new(args);
             game.SetLoadingScreen<MainLoadingScreen>();
             game.AddView<MainStage>();
             game.AddView<GameUI>();

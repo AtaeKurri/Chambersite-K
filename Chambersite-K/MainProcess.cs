@@ -19,8 +19,8 @@ namespace Chambersite_K
         public SpriteBatch _spriteBatch;
         private ImGuiRenderer GUIRenderer;
         public KeyboardState currentKeyboardState;
-        public FrameCounter UpdateFPSCounter = new FrameCounter();
-        public FrameCounter DrawFPSCounter = new FrameCounter();
+        public FrameCounter UpdateFPSCounter = new();
+        public FrameCounter DrawFPSCounter = new();
         public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Resources and Objects
@@ -60,10 +60,18 @@ namespace Chambersite_K
             GlobalObjectPool = new GameObjectPool(this);
             IsMouseVisible = Settings.IsMouseVisible;
 
-            Parser parser = new Parser(with => with.EnableDashDash = true);
+            DoCmds(args);
+        }
+
+        private void DoCmds(string[] args)
+        {
+            Parser parser = new(with => with.EnableDashDash = true);
             ParserResult<CmdOptions> cmds = parser.ParseArguments<CmdOptions>(args);
 
             AllowImGui = cmds.Value.UseImGui;
+            if (cmds.Value.OpenConsole) ConsoleHelper.ShowConsole();
+
+            Logger.Info($"Launch arguments: {string.Join(" ", args)}");
         }
 
         #region Game Loop

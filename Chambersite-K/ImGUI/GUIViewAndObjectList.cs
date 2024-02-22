@@ -16,63 +16,62 @@ using System.Threading.Tasks;
 
 namespace Chambersite_K.ImGUI
 {
-    internal class GUIViewAndObjectList
+    internal class GUIViewAndObjectList : ImGuiLayout
     {
-        public bool ShowWindow = true;
+        public GUIViewAndObjectList() { SetBaseBehaviour(true); }
 
         public void Draw()
         {
-            if (!ShowWindow) return;
-            ImGui.SetNextWindowSize(new System.Numerics.Vector2(600, 600), ImGuiCond.Appearing);
-            ImGui.Begin("Game Inspector", ref ShowWindow);
-            if (ImGui.BeginTabBar("##objectInspector"))
+            if (StartLayout("Game Inspector", new System.Numerics.Vector2(600, 600)))
             {
-                if (ImGui.BeginTabItem("Views"))
+                if (ImGui.BeginTabBar("##objectInspector"))
                 {
-                    foreach (IView view in GAME.ActiveViews)
+                    if (ImGui.BeginTabItem("Views"))
                     {
-                        if (ImGui.CollapsingHeader(view.ToString()))
+                        foreach (IView view in GAME.ActiveViews)
                         {
-                            DisplayView(view);
+                            if (ImGui.CollapsingHeader(view.ToString()))
+                            {
+                                DisplayView(view);
+                            }
                         }
+                        ImGui.EndTabItem();
                     }
-                    ImGui.EndTabItem();
-                }
-                if (ImGui.BeginTabItem("GameObjects"))
-                {
-                    List<Tuple<string, GameObjectPool>> goHolders = new List<Tuple<string, GameObjectPool>>
+                    if (ImGui.BeginTabItem("GameObjects"))
+                    {
+                        List<Tuple<string, GameObjectPool>> goHolders = new List<Tuple<string, GameObjectPool>>
                     { new Tuple<string, GameObjectPool>("Global GameObjects", GAME.GlobalObjectPool) };
-                    foreach (IView view in GAME.ActiveViews)
-                        goHolders.Add(new Tuple<string, GameObjectPool>(view.ToString(), view.LocalObjectPool));
-                    foreach (Tuple<string, GameObjectPool> container in goHolders)
-                    {
-                        if (ImGui.CollapsingHeader($"{container.Item1}"))
+                        foreach (IView view in GAME.ActiveViews)
+                            goHolders.Add(new Tuple<string, GameObjectPool>(view.ToString(), view.LocalObjectPool));
+                        foreach (Tuple<string, GameObjectPool> container in goHolders)
                         {
-                            DisplayGameObject(container.Item2);
+                            if (ImGui.CollapsingHeader($"{container.Item1}"))
+                            {
+                                DisplayGameObject(container.Item2);
+                            }
                         }
+                        ImGui.EndTabItem();
                     }
-                    ImGui.EndTabItem();
-                }
-                if (ImGui.BeginTabItem("Resources"))
-                {
-                    List<Tuple<string, List<IResource>>> resourceHolders = new List<Tuple<string, List<IResource>>>
+                    if (ImGui.BeginTabItem("Resources"))
+                    {
+                        List<Tuple<string, List<IResource>>> resourceHolders = new List<Tuple<string, List<IResource>>>
                     { new Tuple<string, List<IResource>>("Global Pool", GAME.ResourcePool) };
-                    foreach (IView view in GAME.ActiveViews)
-                        resourceHolders.Add(new Tuple<string, List<IResource>>(view.ToString(), view.ResourcePool));
+                        foreach (IView view in GAME.ActiveViews)
+                            resourceHolders.Add(new Tuple<string, List<IResource>>(view.ToString(), view.ResourcePool));
 
-                    foreach (Tuple<string, List<IResource>> container in resourceHolders)
-                    {
-                        if (ImGui.CollapsingHeader($"{container.Item1}"))
+                        foreach (Tuple<string, List<IResource>> container in resourceHolders)
                         {
-                            DisplayResourcePool(container.Item2);
+                            if (ImGui.CollapsingHeader($"{container.Item1}"))
+                            {
+                                DisplayResourcePool(container.Item2);
+                            }
                         }
+                        ImGui.EndTabItem();
                     }
-                    ImGui.EndTabItem();
+                    ImGui.EndTabBar();
                 }
-                ImGui.EndTabBar();
+                EndLayout();
             }
-
-            ImGui.End();
         }
 
         private void DisplayView(IView view)

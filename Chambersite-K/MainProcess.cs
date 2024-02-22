@@ -8,6 +8,7 @@ using Chambersite_K.GameObjects;
 using ImGuiNET;
 using Chambersite_K.ImGUI;
 using Chambersite_K.GameSettings;
+using CommandLine;
 
 namespace Chambersite_K
 {
@@ -49,7 +50,7 @@ namespace Chambersite_K
 
         #endregion
 
-        public MainProcess(bool allowImGui)
+        public MainProcess(string[] args)
         {
             if (GAME != null)
                 throw new ApplicationException("A MainProcess instance already exists.");
@@ -58,7 +59,11 @@ namespace Chambersite_K
             //Content.RootDirectory = "Content";
             GlobalObjectPool = new GameObjectPool(this);
             IsMouseVisible = Settings.IsMouseVisible;
-            AllowImGui = allowImGui;
+
+            Parser parser = new Parser(with => with.EnableDashDash = true);
+            ParserResult<CmdOptions> cmds = parser.ParseArguments<CmdOptions>(args);
+
+            AllowImGui = cmds.Value.UseImGui;
         }
 
         #region Game Loop

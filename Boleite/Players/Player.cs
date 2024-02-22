@@ -34,7 +34,7 @@ namespace Boleite.Players
 
         public int ProtectTime { get; set; } = 0;
         public List<PlayerSupport> Supports { get; set; } = new List<PlayerSupport>();
-        public GameObject? Target { get; set; }
+        public GameObject? Target { get; set; } = null;
 
         private int Death { get; set; } = 0;
         public PlayerDeathState DeathState { get; set; } = PlayerDeathState.Alive;

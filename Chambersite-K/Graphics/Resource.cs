@@ -251,7 +251,7 @@ namespace Chambersite_K.Graphics
 
         public static Resource<T> LoadResource<T>(this IResourceHolder resourceHolder, Texture2D texture, string atlasName, Vector2 position, Vector2 size, Vector2 columnsAndRows)
         {
-            TextureAtlas atlas = new TextureAtlas(texture, position, size, columnsAndRows);
+            TextureAtlas atlas = new TextureAtlas(texture);
             Resource<T> res = new Resource<T>(atlasName, (T)Convert.ChangeType(atlas, typeof(TextureAtlas)));
             resourceHolder.ResourcePool.Add(res);
             return res;

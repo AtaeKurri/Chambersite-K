@@ -13,14 +13,9 @@ namespace RftSE_K.Views
         public MainLoadingScreen()
             : base()
         {
+            ViewsToLoad.Add(typeof(TestStage));
+            ViewsToLoad.Add(typeof(GameUI));
             AddResourceLoader<BulletResourceLoader>();
-        }
-
-        public override void AfterLoading()
-        {
-            AddView<TestStage>();
-            AddView<GameUI>();
-            base.AfterLoading();
         }
     }
 }

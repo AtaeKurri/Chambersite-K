@@ -40,9 +40,10 @@ namespace Chambersite_K.ImGUI
                     if (ImGui.BeginTabItem("GameObjects"))
                     {
                         List<Tuple<string, GameObjectPool>> goHolders = new List<Tuple<string, GameObjectPool>>
-                    { new Tuple<string, GameObjectPool>("Global GameObjects", GAME.GlobalObjectPool) };
+                    { new Tuple<string, GameObjectPool>("Global GameObjects", GAME.ObjectPool) };
                         foreach (IView view in GAME.ActiveViews)
-                            goHolders.Add(new Tuple<string, GameObjectPool>(view.ToString(), view.LocalObjectPool));
+                            goHolders.Add(new Tuple<string, GameObjectPool>(view.ToString(), view.ObjectPool));
+
                         foreach (Tuple<string, GameObjectPool> container in goHolders)
                         {
                             if (ImGui.CollapsingHeader($"{container.Item1}"))
@@ -77,7 +78,7 @@ namespace Chambersite_K.ImGUI
         private void DisplayView(IView view)
         {
             ImGui.Text($"Type: {view.GetType().Name}");
-            ImGui.Text($"View Type: {view.vType}");
+            ImGui.Text($"View Type: {view.ViewType}");
             ImGui.Text($"Status: {view.ViewStatus}");
             ImGui.Text($"Timer: {view.Timer}");
             PropertyInfo[] properties = view.GetType().GetProperties();

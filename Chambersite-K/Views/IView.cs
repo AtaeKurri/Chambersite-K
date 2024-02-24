@@ -12,20 +12,16 @@ using System.Threading.Tasks;
 
 namespace Chambersite_K.Views
 {
-    public interface IView : IParentable, IResourceHolder, ICoroutineConsumer
+    public interface IView : IParentable, IResourceHolder, ICoroutineConsumer, IGameCycle
     {
         public string InternalName { get; set; }
         public Guid? Id { get; set; }
-        public ViewType vType { get; }
+        public ViewType ViewType { get; }
         public ViewStatus ViewStatus { get; set; }
-        public GameObjectPool LocalObjectPool { get; set; }
+        public bool Hidden { get; set; }
+        public GameObjectPool ObjectPool { get; set; }
         public bool WasInitialized { get; }
-        public long Timer { get; set; }
         public int RenderOrder { get; set; }
         public ViewBounds WorldBounds { get; set; }
-        public void Init();
-        public void LoadResources();
-        public void Frame(GameTime gameTime);
-        public void Render();
     }
 }

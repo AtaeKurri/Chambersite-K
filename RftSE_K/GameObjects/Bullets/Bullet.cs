@@ -15,6 +15,7 @@ namespace RftSE_K.GameObjects.Bullets
         public override async Task<int> LoadResources()
         {
             LoadResource<Texture2D>("bullet1", "Assets/Bullets/bullet1.png");
+            LoadResource<Texture2D>("bullet2", "Assets/Bullets/bullet2.png");
             return NumOfResourceLoaded;
         }
     }

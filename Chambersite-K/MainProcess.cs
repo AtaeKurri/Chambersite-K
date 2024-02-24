@@ -14,7 +14,7 @@ namespace Chambersite_K
 {
     public class MainProcess : Game, IResourceHolder
     {
-        private bool _IsInitialized = false;
+        internal bool _IsInitialized = false;
         public GraphicsDeviceManager _graphics;
         public SpriteBatch _spriteBatch;
         private ImGuiRenderer GUIRenderer;
@@ -28,10 +28,9 @@ namespace Chambersite_K
         public static Settings Settings { get; set; } = new Settings();
 
         public List<IResource> ResourcePool { get; set; } = new List<IResource>();
-        public GameObjectPool GlobalObjectPool { get; set; }
+        public GameObjectPool ObjectPool { get; set; }
         internal LoadingScreen? LoadingScreen { get; set; }
-        internal List<IView> ActiveViews { get; set; } = new List<IView>();
-        private HashSet<Guid> UsedGuids = new HashSet<Guid>();
+        internal ViewPool ActiveViews { get; set; }
 
         public List<IResource> GetGlobalResources() => ResourcePool;
 
@@ -57,7 +56,8 @@ namespace Chambersite_K
             GAME = this;
             _graphics = new GraphicsDeviceManager(this);
             //Content.RootDirectory = "Content";
-            GlobalObjectPool = new GameObjectPool(this);
+            ObjectPool = new GameObjectPool(this);
+            ActiveViews = new ViewPool(this);
             IsMouseVisible = Settings.IsMouseVisible;
 
             DoCmds(args);
@@ -91,7 +91,7 @@ namespace Chambersite_K
             base.Initialize();
             _IsInitialized = true;
             Logger.Debug("MainProcess was initialized correctly.");
-            LoadingScreen.Init();
+            LoadingScreen.Initialize();
             /*foreach (IView view in ActiveViews)
             {
                 if (!view.WasInitialized)
@@ -104,26 +104,39 @@ namespace Chambersite_K
             _spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
-        protected override void Update(GameTime gameTime)
+        protected void BeforeUpdate(GameTime gameTime)
         {
-            if (!_IsInitialized)
-                return;
             UpdateFPSCounter.Update(gameTime);
             currentKeyboardState = Keyboard.GetState();
 
             if (currentKeyboardState.IsKeyPressedOnce(ToggleImGUI))
                 IsImGuiActive = !IsImGuiActive;
 
-            LoadingScreen?.Frame(gameTime);
-            foreach (IView view in ActiveViews)
-            {
-                if (!view.WasInitialized && LoadingScreen == null) view.Init();
-                view.Frame(gameTime);
-            }
-            GlobalObjectPool.Frame(gameTime);
+            LoadingScreen?.BeforeUpdate();
+            ActiveViews.BeforeUpdate();
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            if (!_IsInitialized)
+                return;
+            BeforeUpdate(gameTime);
+
+            LoadingScreen?.Update();
+            ActiveViews.Update();
+            ObjectPool.Update();
+
+            base.Update(gameTime);
+
+            AfterUpdate(gameTime);
+        }
+
+        protected void AfterUpdate(GameTime gameTime)
+        {
+            LoadingScreen?.AfterUpdate();
+            ActiveViews.AfterUpdate();
 
             currentKeyboardState.UpdatePreviousKeyboardState();
-            base.Update(gameTime);
         }
 
         /// <summary>
@@ -145,8 +158,8 @@ namespace Chambersite_K
                 null,
                 Settings.GetViewportScale());
 
-            LoadingScreen?.Render();
-            RenderViewsByType();
+            LoadingScreen?.Draw();
+            ActiveViews.Draw();
 
             _spriteBatch.End();
             base.Draw(gameTime);
@@ -159,16 +172,6 @@ namespace Chambersite_K
         #endregion
         #region Views and GameObjects
 
-        private void RenderViewsByType()
-        {
-            ViewType[] types = (ViewType[])Enum.GetValues(typeof(ViewType));
-            foreach (ViewType type in types)
-            {
-                foreach (IView view in ActiveViews.FindAll(x => x.vType == type))
-                    if (view.ViewStatus != ViewStatus.Hidden) view.Render();
-            }
-        }
-
         /// <summary>
         /// Creates a new instance of <typeparamref name="T"/>.<br/>
         /// Will only call <see cref="IView.Init"/> is the game is properly Initialized.
@@ -179,36 +182,8 @@ namespace Chambersite_K
         /// <exception cref="InvalidViewOperationException">Will be thrown if another stage already exists or if you try to add a Loading Screen.</exception>
         public IView AddView<T>(params object[] viewParams)
         {
-            IView view = (IView)Activator.CreateInstance(typeof(T), args: viewParams);
-            if (view == null)
-                throw new ApplicationException($"The View with a type of {typeof(T).Name} couldn't be created.");
-            if (view.vType == ViewType.Stage && ActiveViews.Any(x => x.vType == ViewType.Stage))
-                throw new InvalidViewOperationException("Multiple stages cannot co-exist. If you wish to switch to another stage, please use the correct method.");
-            else if (view.vType == ViewType.Background && ActiveViews.Any(x => x.vType == ViewType.Background))
-                throw new InvalidViewOperationException("Multiple Backgrounds cannot co-exist.");
-            else if (view.vType == ViewType.LoadingScreen)
-                throw new InvalidViewOperationException("You cannot add a Loading Screen into the Active Views.");
-
-            GenerateGuid(ref view);
-            ActiveViews.Add(view);
-            if (view.RenderOrder == -999_999_999)
-                view.RenderOrder = ActiveViews.Count-1;
-            if (_IsInitialized)
-                view.Init();
-
-            ActiveViews.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
+            IView view = ActiveViews.AddView<T>(viewParams);
             return view;
-        }
-
-        private void GenerateGuid(ref IView v)
-        {
-            Guid uuid = Guid.NewGuid();
-
-            while (UsedGuids.Contains(uuid))
-                uuid = Guid.NewGuid();
-
-            v.Id = uuid;
-            UsedGuids.Add(uuid);
         }
 
         public LoadingScreen SetLoadingScreen<T>()
@@ -221,26 +196,6 @@ namespace Chambersite_K
             loader.Parent = this;
             this.LoadingScreen = loader;
             return loader;
-        }
-
-        /// <summary>
-        /// Attepts to create a new Stage and delete the existing one. Will fail if the view type provided is not of <see cref="ViewType.Stage"/>.
-        /// </summary>
-        /// <typeparam name="T">A <see cref="IView"/> type</typeparam>
-        /// <param name="viewParams">Optional constructor arguments</param>
-        /// <returns>A new instance of <typeparamref name="T"/></returns>
-        /// <exception cref="InvalidViewOperationException">Will be thrown if the view type is not a Stage View.</exception>
-        public IView SwitchToStage<T>(params object[] viewParams)
-        {
-            IView view = (IView)Activator.CreateInstance(typeof(T), args: viewParams);
-            if (view.vType != ViewType.Stage)
-                throw new InvalidViewOperationException("You cannot switch to a non-stage view.");
-
-            ActiveViews.RemoveAll(x => x.vType == ViewType.Stage);
-            ActiveViews.Add(view);
-            if (_IsInitialized)
-                view.Init();
-            return view;
         }
 
         private void UpdateViewport(object sender, EventArgs e)

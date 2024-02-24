@@ -37,20 +37,40 @@ namespace Chambersite_K.GameObjects
             CollisionChecker = new CollisionComponent(parent.WorldBounds.ToRectangleF());
         }
 
-        public void Frame(GameTime gameTime)
+        public void BeforeUpdate()
         {
             for (int i = 0; i < ObjectPool.Count; i++)
             {
-                ObjectPool[i].Frame();
+                GameObject go = ObjectPool[i];
+                if (go.IsValid()) go.BeforeUpdate();
+            }
+        }
+
+        public void Update()
+        {
+            for (int i = 0; i < ObjectPool.Count; i++)
+            {
+                GameObject go = ObjectPool[i];
+                if (go.IsValid()) go.Update();
+            }
+        }
+
+        public void AfterUpdate()
+        {
+            for (int i = 0; i < ObjectPool.Count; i++)
+            {
+                GameObject go = ObjectPool[i];
+                if (go.IsValid()) go.AfterUpdate();
             }
             ObjectPool.RemoveAll(x => x.Status == GameObjectStatus.AwaitingDeletion);
         }
 
-        public void Render()
+        public void Draw()
         {
             for (int i = 0; i<ObjectPool.Count; i++)
             {
-                ObjectPool[i].Render();
+                GameObject go = ObjectPool[i];
+                if (go.IsValid() && !go.Hidden) go.Draw();
             }
         }
 
@@ -63,7 +83,7 @@ namespace Chambersite_K.GameObjects
             go.ParentView = parentView;
             go.Position = Vector2.Zero;
             ObjectPool.Add(go);
-            go.Init();
+            go.Initialize();
             CollisionChecker.Insert(go);
             return go;
         }

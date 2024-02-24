@@ -34,7 +34,7 @@ namespace Chambersite_K.GameObjects
     }
 
     // GameObjects should never try to load resources from themselves
-    public abstract class GameObject : IGameObject, IParentable, ICollisionActor, ICoroutineConsumer
+    public abstract class GameObject : IParentable, ICollisionActor, ICoroutineConsumer, IGameCycle
     {
         #region Properties
         public string InternalName { get; set; }
@@ -48,12 +48,13 @@ namespace Chambersite_K.GameObjects
         public long Timer { get; set; } = 0;
         public int RenderOrder { get; set; } = -999_999_999;
         public IShapeF Bounds { get; set; }
+        public bool Hidden { get; set; } = false;
 
-        public Vector2 Position { get; set; } = Vector2.Zero;
-        public float Velocity { get; set; } = 0.0f;
-        public Vector2 Direction { get; private set; } = Vector2.Zero;
-        public float Acceleration { get; set; } = 0.0f;
-        public Vector2 AccelerationDir { get; set; } = Vector2.Zero;
+        public virtual Vector2 Position { get; set; } = Vector2.Zero;
+        public virtual float Velocity { get; set; } = 0.0f;
+        public virtual Vector2 Direction { get; private set; } = Vector2.Zero;
+        public virtual float Acceleration { get; set; } = 0.0f;
+        public virtual Vector2 AccelerationDir { get; set; } = Vector2.Zero;
 
         /// <summary>
         /// The name of the base image of this <see cref="GameObject"/>. Will try to find
@@ -85,8 +86,8 @@ namespace Chambersite_K.GameObjects
         /// <summary>
         /// Syncs <see cref="Rotation"/> with <see cref="Angle"/>'s value if set to true.
         /// </summary>
-        public bool SyncRotation { get; set; } = true;
-        public Vector2 Scale { get; set; } = Vector2.One;
+        public virtual bool SyncRotation { get; set; } = true;
+        public virtual Vector2 Scale { get; set; } = Vector2.One;
 
         public object Parent { get; set; } = null;
         public IView ParentView { get; set; }
@@ -118,9 +119,9 @@ namespace Chambersite_K.GameObjects
         ~GameObject()
         {
             if (IsLocalToView)
-                try { ParentView.LocalObjectPool.ObjectPool.Remove(this); } catch (Exception) { }
+                try { ParentView.ObjectPool.ObjectPool.Remove(this); } catch (Exception) { }
             else
-                try { GAME.GlobalObjectPool.ObjectPool.Remove(this); } catch (Exception) { }
+                try { GAME.ObjectPool.ObjectPool.Remove(this); } catch (Exception) { }
         }
 
         public override string ToString()
@@ -128,25 +129,31 @@ namespace Chambersite_K.GameObjects
             return $"\"{InternalName}\" ({GetType().Name}:{Id})";
         }
 
-        public virtual void Init()
+        public virtual void Initialize()
         {
             try { ImageTexture = ParentView.FindResource<Texture2D>(Image); }
             catch (KeyNotFoundException) { ImageTexture = null; } // The ImageTexture wasn't set properly. This is normal for some objects so ignore.
         }
 
-        public virtual void Frame()
+        public virtual void BeforeUpdate()
         {
-            if (Status == GameObjectStatus.Active)
-            {
-                Direction = new Vector2(MathF.Cos(Angle), MathF.Sin(Angle));
-                //Position += Direction * Velocity;
-                Timer++;
-            }
+
         }
 
-        public virtual void Render()
+        public virtual void Update()
         {
-            ImageTexture?.Render(Position, Rotation, Scale);
+            Direction = new Vector2(MathF.Cos(Angle), MathF.Sin(Angle));
+            //Position += Direction * Velocity;
+        }
+
+        public virtual void AfterUpdate()
+        {
+            Timer++;
+        }
+
+        public virtual void Draw()
+        {
+            ImageTexture?.Draw(Position, Rotation, Scale);
         }
 
         public void DrawCollision()
@@ -182,34 +189,6 @@ namespace Chambersite_K.GameObjects
         public virtual void OnCollision(CollisionEventArgs collisionInfo)
         {
             Logger.Debug("Collided");
-        }
-
-        /// <summary>
-        /// Creates a <see cref="GameObject"/> and adds it as a Child of this <see cref="IView"/>.<br/>
-        /// If <paramref name="globalObject"/> is set to <c>true</c>, this object will not render.
-        /// </summary>
-        /// <typeparam name="T">The <see cref="GameObject"/> type to instanciate.</typeparam>
-        /// <param name="globalObject">Is this meant to be a global object?</param>
-        /// <param name="image">Optional base image to render this object.</param>
-        /// <returns>The instanciated <typeparamref name="T"/> <see cref="GameObject"/>.</returns>
-        public GameObject CreateGameObject<T>(bool globalObject = false, string image = null)
-        {
-            GameObject go;
-            if (globalObject)
-                go = AddGameObjectToList<T>(GAME.GlobalObjectPool);
-            else
-                go = AddGameObjectToList<T>(ParentView.LocalObjectPool);
-            AddChild(go);
-            return go;
-        }
-
-        private GameObject AddGameObjectToList<T>(GameObjectPool pool)
-        {
-            GameObject go = pool.CreateGameObject<T>(this, ParentView);
-            if (go.RenderOrder == -999_999_999)
-                go.RenderOrder = pool.GetAllObjectCount() - 1;
-            pool.ObjectPool.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
-            return go;
         }
 
         public void AddChild(GameObject child)

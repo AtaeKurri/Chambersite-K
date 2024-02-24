@@ -90,12 +90,10 @@ namespace Chambersite_K.Graphics
         /// <typeparam name="T">The type of the resource you want to load. Exemple: <see cref="Texture2D"/></typeparam>
         /// <param name="name">The resource name, used to identify the resource among other files</param>
         /// <param name="filepath">The relative filepath to the resource</param>
-        /// <returns></returns>
+        /// <returns>The created resource.</returns>
         public static Resource<T> LoadGlobalResource(string name, string filepath)
         {
             Resource<T> res = GAME.LoadResource<T>(name, filepath);
-            if (res != null)
-                GAME.ResourcePool.Add(res);
             return res;
         }
 
@@ -103,9 +101,9 @@ namespace Chambersite_K.Graphics
         /// Renders a <see cref="Texture2D"/>. Doesn't do anything if the Resource is not a <see cref="Texture2D"/>.
         /// </summary>
         /// <param name="position">Position of the image on the screen</param>
-        public void Render(Vector2 position)
+        public void Draw(Vector2 position)
         {   
-            Render(position, 0f, Vector2.One, Color.White, SpriteEffects.None);
+            Draw(position, 0f, Vector2.One, Color.White, SpriteEffects.None);
         }
 
         /// <summary>
@@ -114,9 +112,9 @@ namespace Chambersite_K.Graphics
         /// <param name="position">Position of the image on the screen</param>
         /// <param name="rotation">Rotation in radian of the image</param>
         /// <param name="scale">Size multiplier. A scale of Vector2(1, 1) is the default behaviour</param>
-        public void Render(Vector2 position, float rotation, Vector2 scale)
+        public void Draw(Vector2 position, float rotation, Vector2 scale)
         {
-            Render(position, rotation, scale, Color.White, SpriteEffects.None);
+            Draw(position, rotation, scale, Color.White, SpriteEffects.None);
         }
 
         /// <summary>
@@ -127,7 +125,7 @@ namespace Chambersite_K.Graphics
         /// <param name="scale"></param>
         /// <param name="color"></param>
         /// <param name="spriteEffects"></param>
-        public void Render(Vector2 position, float rotation, Vector2 scale, Color color, SpriteEffects spriteEffects=SpriteEffects.None)
+        public void Draw(Vector2 position, float rotation, Vector2 scale, Color color, SpriteEffects spriteEffects=SpriteEffects.None)
         {
             if (Res is Texture2D)
             {
@@ -136,7 +134,7 @@ namespace Chambersite_K.Graphics
             }
         }
 
-        public void RenderRect(Rectangle position, Rectangle originRect, float rotation)
+        public void DrawRect(Rectangle position, Rectangle originRect, float rotation)
         {
             if (Res is Texture2D)
             {

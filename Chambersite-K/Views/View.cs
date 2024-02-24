@@ -18,15 +18,13 @@ namespace Chambersite_K.Views
         Stage, // Can only have a single Stage view active at once.
         Interface, // Can have multiple interfaces.
         Menu, // Can have multiple menus. Renders on top of interfaces since this is also meant for the pause menus too.
-        LoadingScreen, // Can only have one per MainProcess instance.
     }
 
     public enum ViewStatus
     {
         AwaitingInit,
         Active,
-        Paused,
-        Hidden
+        Paused
     }
 
     public abstract class View : IView
@@ -37,11 +35,12 @@ namespace Chambersite_K.Views
         /// Defines the type of a View.<br/>
         /// Is <see cref="ViewType.Menu"/> by default.
         /// </summary>
-        public ViewType vType { get; private set; }
+        public ViewType ViewType { get; private set; }
         public Guid? Id { get; set; } = null;
         public ViewStatus ViewStatus { get; set; } = ViewStatus.AwaitingInit;
         public bool WasInitialized { get; private set; } = false;
         public long Timer { get; set; } = 0;
+        public bool Hidden { get; set; } = false;
         public int RenderOrder { get; set; } = -999_999_999;
         public ViewBounds WorldBounds { get; set; } = new ViewBounds();
 
@@ -50,7 +49,7 @@ namespace Chambersite_K.Views
         /// See <see cref="ResourceExtensions.FindResource{T}(List{IResource}, string)"/> to find resources inside this List more easily.
         /// </summary>
         public List<IResource> ResourcePool { get; set; } = new List<IResource>();
-        public GameObjectPool LocalObjectPool { get; set; }
+        public GameObjectPool ObjectPool { get; set; }
 
         /// <summary>
         /// The Parent of a View is always the instanced <see cref="MainProcess"/> object.
@@ -65,11 +64,11 @@ namespace Chambersite_K.Views
         public View()
         {
             ParentView = this;
-            LocalObjectPool = new GameObjectPool(this);
+            ObjectPool = new GameObjectPool(this);
             CoroutineManager = new CoroutineManager(this);
 
             ViewTypeAttribute viewTypeAttr = (ViewTypeAttribute)Attribute.GetCustomAttribute(GetType(), typeof(ViewTypeAttribute));
-            vType = (viewTypeAttr != null) ? viewTypeAttr.ViewType : ViewType.Stage;
+            ViewType = (viewTypeAttr != null) ? viewTypeAttr.ViewType : ViewType.Stage;
 
             InternalNameAttribute viewNameAttr = (InternalNameAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InternalNameAttribute));
             InternalName = (viewNameAttr != null) ? viewNameAttr.InternalName : $"{GetType().Name}";
@@ -80,7 +79,7 @@ namespace Chambersite_K.Views
 
         ~View()
         {
-            GAME.ActiveViews.Remove(this);
+            GAME.ActiveViews.Pool.Remove(this);
         }
 
         public override string ToString()
@@ -92,28 +91,32 @@ namespace Chambersite_K.Views
         {
         }
 
-        public virtual void Init()
+        public virtual void Initialize()
         {
             WasInitialized = true;
             ViewStatus = ViewStatus.Active;
             Logger.Debug("View {0} Initialized.", InternalName);
         }
 
-        public virtual void Frame(GameTime gameTime)
+        public virtual void BeforeUpdate()
         {
-            if (ViewStatus == ViewStatus.Hidden || ViewStatus == ViewStatus.Paused)
-                return;
+            ObjectPool.BeforeUpdate();
+        }
 
-            LocalObjectPool.Frame(gameTime);
-            
+        public virtual void Update()
+        {
+            ObjectPool.Update();
+        }
+
+        public virtual void AfterUpdate()
+        {
+            ObjectPool.AfterUpdate();
             Timer++;
         }
 
-        public virtual void Render()
+        public virtual void Draw()
         {
-            if (ViewStatus == ViewStatus.Hidden)
-                return;
-            LocalObjectPool.Render();
+            ObjectPool.Draw();
         }
 
         public List<IResource> GetGlobalResources() => GAME.ResourcePool;
@@ -130,9 +133,9 @@ namespace Chambersite_K.Views
         {
             GameObject go;
             if (globalObject)
-                go = AddGameObjectToList<T>(GAME.GlobalObjectPool);
+                go = AddGameObjectToList<T>(GAME.ObjectPool);
             else
-                go = AddGameObjectToList<T>(LocalObjectPool);
+                go = AddGameObjectToList<T>(ObjectPool);
             AddChild(go);
             return go;
         }
@@ -156,6 +159,6 @@ namespace Chambersite_K.Views
             WorldBounds = ViewBounds.FromRectangleF(bounds);
         }
 
-        public bool IsValid() => (ViewStatus != ViewStatus.AwaitingInit || ViewStatus != ViewStatus.Paused);
+        public bool IsValid() => (ViewStatus != ViewStatus.AwaitingInit);
     }
 }

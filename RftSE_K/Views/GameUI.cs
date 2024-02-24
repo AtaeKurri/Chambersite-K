@@ -14,11 +14,11 @@ namespace RftSE_K.Views
     [ViewType(ViewType.Interface)]
     public class GameUI : View
     {
-        public override void Init()
+        public override void Initialize()
         {
             this.LoadResource<Texture2D>("ui_bg", "Assets/UI/ui_bg.png");
             CreateGameObject<Interface>();
-            base.Init();
+            base.Initialize();
         }
     }
 }

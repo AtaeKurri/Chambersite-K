@@ -15,24 +15,24 @@ namespace Boleite.Items
         public override GameObjectGroup Group => GameObjectGroup.Item;
         public override bool CheckBound => false;
 
-        public override void Init()
+        public override void Initialize()
         {
             
-            base.Init();
+            base.Initialize();
         }
 
-        public override void Frame()
+        public override void Update()
         {
             if (Position.Y > ParentView.WorldBounds.WorldTop)
                 return; // Render the ItemUp texture
             else
-                base.Frame();
+                base.Update();
         }
 
-        public override void Render()
+        public override void Draw()
         {
 
-            base.Render();
+            base.Draw();
         }
 
         public virtual void Collect(Player player)

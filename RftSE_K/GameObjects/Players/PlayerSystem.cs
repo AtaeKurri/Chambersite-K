@@ -6,26 +6,18 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using RftSE_K.GameObjects;
 
-namespace Boleite.Players
+namespace RftSE_K.GameObjects.Players
 {
-    /*public class PlayerResourceLoader : GlobalResourceLoader
-    {
-        public override async Task<int> LoadResources()
-        {
-            Texture2D MotaeTexture = await LoadResource<Texture2D>("motae_player", "Assets/player/motae.png");
-            return NumOfResourceLoaded;
-        }
-    }*/
-
     public enum PlayerDeathState
     {
         Alive,
         Dead,
     }
 
-    [InternalName("Player")]
-    public abstract class Player : GameObject
+    [InternalName("Player System")]
+    public abstract class PlayerSystem : GameObject
     {
         public float Speed { get; set; } = 4.5f;
         public float FocusSpeed { get; set; } = 2.0f;
@@ -38,6 +30,7 @@ namespace Boleite.Players
 
         private int Death { get; set; } = 0;
         public PlayerDeathState DeathState { get; set; } = PlayerDeathState.Alive;
+        public bool SoftDeath { get; set; } = false;
         public bool IsInDialog { get; set; } = false;
 
         private int NextShoot { get; set; } = 0;
@@ -154,12 +147,27 @@ namespace Boleite.Players
 
         private void FrameDeathMiss()
         {
+            if (DeathState != PlayerDeathState.Dead)
+                return;
+
+            Miss();
+            SoftDeath = VariableHolder.PlayerHealth != 0 ? true : false;
+            if (SoftDeath)
+            {
+                // Do the deletion of bullets, and the player death animation
+            }
+            Hidden = true;
 
         }
 
         private void FrameDeathReset()
         {
-
+            if (!SoftDeath)
+            {
+                Position = new Vector2(0f, -236);
+                // Set the supports pos too
+                Hidden = false;
+            }
         }
 
         private void FrameUpdateVariables()
@@ -173,7 +181,7 @@ namespace Boleite.Players
         }
 
         #endregion
-        
+
         public void Miss()
         {
 

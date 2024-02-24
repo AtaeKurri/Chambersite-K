@@ -11,10 +11,10 @@ namespace RftSE_K.GameObjects.UI
     [InternalName("UI")]
     public class Interface : GameObject
     {
-        public override void Init()
+        public override void Initialize()
         {
             Image = "ui_bg";
-            base.Init();
+            base.Initialize();
         }
     }
 }

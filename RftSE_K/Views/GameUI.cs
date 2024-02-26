@@ -17,7 +17,7 @@ namespace RftSE_K.Views
         public override void Initialize()
         {
             this.LoadResource<Texture2D>("ui_bg", "Assets/UI/ui_bg.png");
-            CreateGameObject<Interface>();
+            CreateGameObject(new Interface());
             base.Initialize();
         }
     }

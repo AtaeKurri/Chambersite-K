@@ -173,29 +173,27 @@ namespace Chambersite_K
         #region Views and GameObjects
 
         /// <summary>
-        /// Creates a new instance of <typeparamref name="T"/>.<br/>
+        /// Adds an instance of <see cref="IView"/> to the active view pool.<br/>
         /// Will only call <see cref="IView.Init"/> is the game is properly Initialized.
         /// </summary>
-        /// <typeparam name="T">A <see cref="IView"/> type</typeparam>
-        /// <param name="viewParams">Optional constructor arguments</param>
-        /// <returns>A new instance of <typeparamref name="T"/></returns>
-        /// <exception cref="InvalidViewOperationException">Will be thrown if another stage already exists or if you try to add a Loading Screen.</exception>
-        public IView AddView<T>(params object[] viewParams)
-        {
-            IView view = ActiveViews.AddView<T>(viewParams);
-            return view;
-        }
+        /// <param name="view">An instance of <see cref="IView"/>.</param>
+        /// <returns>The same instance of <paramref name="view"/>.</returns>
+        /// <exception cref="InvalidViewOperationException">Will be thrown if another stage already exists.</exception>
+        public IView AddView(IView view) => ActiveViews.AddView(view);
 
-        public LoadingScreen SetLoadingScreen<T>()
+        /// <summary>
+        /// Create a new loading screen and inits it.
+        /// </summary>
+        /// <param name="loadingScreen">The instance of a <see cref="LoadingScreen"/> type.</param>
+        /// <returns>The same instance.</returns>
+        /// <exception cref="ApplicationException">Thrown if a loading screen already exists in the game.</exception>
+        public LoadingScreen SetLoadingScreen(LoadingScreen loadingScreen)
         {
-            if (LoadingScreen != null)
-            {
+            if (this.LoadingScreen != null)
                 throw new ApplicationException("A Loading Screen already exists, cannot create another one");
-            }
-            LoadingScreen loader = (LoadingScreen)Activator.CreateInstance(typeof(T));
-            loader.Parent = this;
-            this.LoadingScreen = loader;
-            return loader;
+            loadingScreen.Parent = this;
+            this.LoadingScreen = loadingScreen;
+            return loadingScreen;
         }
 
         private void UpdateViewport(object sender, EventArgs e)

@@ -58,18 +58,16 @@ namespace Chambersite_K.Views
         }
 
         /// <summary>
-        /// Creates a new instance of <typeparamref name="T"/>.<br/>
+        /// Create and adds a view to the active view pool.<br/>
         /// Will only call <see cref="IView.Init"/> is the game is properly Initialized.
         /// </summary>
-        /// <typeparam name="T">A <see cref="IView"/> type</typeparam>
-        /// <param name="viewParams">Optional constructor arguments</param>
-        /// <returns>A new instance of <typeparamref name="T"/></returns>
+        /// <param name="view"></param>
+        /// <returns>The view instance.</returns>
         /// <exception cref="InvalidViewOperationException">Will be thrown if another stage already exists or if you try to add a Loading Screen.</exception>
-        public IView AddView<T>(params object[] viewParams)
+        public IView AddView(IView view)
         {
-            IView view = (IView)Activator.CreateInstance(typeof(T), args: viewParams);
             if (view == null)
-                throw new ApplicationException($"The View with a type of {typeof(T).Name} couldn't be created.");
+                throw new ApplicationException($"The View with a type of {view.GetType().Name} couldn't be created.");
             if (view.ViewType == ViewType.Stage && Pool.Any(x => x.ViewType == ViewType.Stage))
                 throw new InvalidViewOperationException("Multiple stages cannot co-exist. If you wish to switch to another stage, please use the correct method.");
             else if (view.ViewType == ViewType.Background && Pool.Any(x => x.ViewType == ViewType.Background))
@@ -89,7 +87,6 @@ namespace Chambersite_K.Views
         private void GenerateGuid(ref IView v)
         {
             Guid uuid = Guid.NewGuid();
-
             while (UsedGuids.Contains(uuid))
                 uuid = Guid.NewGuid();
 
@@ -100,13 +97,11 @@ namespace Chambersite_K.Views
         /// <summary>
         /// Attepts to create a new Stage and delete the existing one. Will fail if the view type provided is not of <see cref="ViewType.Stage"/>.
         /// </summary>
-        /// <typeparam name="T">A <see cref="IView"/> type</typeparam>
-        /// <param name="viewParams">Optional constructor arguments</param>
-        /// <returns>A new instance of <typeparamref name="T"/></returns>
+        /// <param name="view">An instance of <see cref="IView"/> of type <see cref="ViewType.Stage"/></param>
+        /// <returns>The instance of the stage.</returns>
         /// <exception cref="InvalidViewOperationException">Will be thrown if the view type is not a Stage View.</exception>
-        public IView SwitchToStage<T>(params object[] viewParams)
+        public IView SwitchToStage(IView view)
         {
-            IView view = (IView)Activator.CreateInstance(typeof(T), args: viewParams);
             if (view.ViewType != ViewType.Stage)
                 throw new InvalidViewOperationException("You cannot switch to a non-stage view.");
 

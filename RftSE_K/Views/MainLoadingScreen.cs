@@ -13,9 +13,11 @@ namespace RftSE_K.Views
         public MainLoadingScreen()
             : base()
         {
-            ViewsToLoad.Add(typeof(TestStage));
-            ViewsToLoad.Add(typeof(GameUI));
-            AddResourceLoader<BulletResourceLoader>();
+            ViewsToLoad = [
+                new TestStage(),
+                new GameUI()
+            ];
+            AddResourceLoader(new BulletResourceLoader());
         }
     }
 }

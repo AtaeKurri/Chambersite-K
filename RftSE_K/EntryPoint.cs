@@ -11,7 +11,7 @@ namespace RftSE_K
             MainProcess game = new(args);
             MainProcess.Settings.Keybinds.Add(("RackLeft", Keys.Q));
             MainProcess.Settings.Keybinds.Add(("RackRight", Keys.D));
-            game.SetLoadingScreen<MainLoadingScreen>();
+            game.SetLoadingScreen(new MainLoadingScreen());
             game.Run();
         }
     }

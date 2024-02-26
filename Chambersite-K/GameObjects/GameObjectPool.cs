@@ -1,5 +1,6 @@
 ﻿using Chambersite_K.Views;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended.Collections;
 using MonoGame.Extended.Collisions;
 using System;
 using System.Collections;
@@ -14,13 +15,11 @@ namespace Chambersite_K.GameObjects
     {
         public List<GameObject> ObjectPool { get; set; } = new List<GameObject>();
         private readonly CollisionComponent CollisionChecker;
-        private bool IsLocalPool = false;
         private HashSet<Guid> UsedGuids = new HashSet<Guid>();
         private object Parent;
 
         public GameObjectPool(MainProcess parent)
         {
-            IsLocalPool = false;
             Parent = parent;
             CollisionChecker = new CollisionComponent(new MonoGame.Extended.RectangleF(
                 MainProcess.Settings.ViewportSize.X,
@@ -32,7 +31,6 @@ namespace Chambersite_K.GameObjects
 
         public GameObjectPool(IView parent)
         {
-            IsLocalPool = true;
             Parent = parent;
             CollisionChecker = new CollisionComponent(parent.WorldBounds.ToRectangleF());
         }
@@ -74,18 +72,20 @@ namespace Chambersite_K.GameObjects
             }
         }
 
-        public GameObject CreateGameObject<T>(IParentable parent, IView parentView, params object[] objectParams)
+        public GameObject AddGameObject(GameObject gameObject, IParentable parent, IView parentView)
         {
-            GameObject go = (GameObject)Activator.CreateInstance(typeof(T), args:objectParams);
-            GenerateGuid(ref go);
-            go.IsLocalToView = IsLocalPool;
-            go.Parent = parent;
-            go.ParentView = parentView;
-            go.Position = Vector2.Zero;
-            ObjectPool.Add(go);
-            go.Initialize();
-            CollisionChecker.Insert(go);
-            return go;
+            GenerateGuid(ref gameObject);
+            gameObject.ParentPool = this;
+            gameObject.Parent ??= parent;
+            gameObject.ParentView = parentView;
+            ObjectPool.Add(gameObject);
+            gameObject.Initialize();
+            CollisionChecker.Insert(gameObject);
+
+            if (gameObject.RenderOrder == -999_999_999)
+                gameObject.RenderOrder = GetAllObjectCount() - 1;
+            ObjectPool.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
+            return gameObject;
         }
 
         private void GenerateGuid(ref GameObject go)

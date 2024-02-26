@@ -41,10 +41,6 @@ namespace Chambersite_K.GameObjects
         public Guid? Id { get; set; } = null;
         public GameObjectStatus Status { get; set; } = GameObjectStatus.Active;
         public virtual GameObjectGroup Group { get; set; } = GameObjectGroup.None;
-        /// <summary>
-        /// Checks if this <see cref="GameObject"/> instance is local to a <see cref="View"/> or a Global object.
-        /// </summary>
-        public bool IsLocalToView { get; set; } = false;
         public long Timer { get; set; } = 0;
         public int RenderOrder { get; set; } = -999_999_999;
         public IShapeF Bounds { get; set; }
@@ -66,7 +62,7 @@ namespace Chambersite_K.GameObjects
         /// <summary>
         /// Differs from <see cref="Rotation"/> as this property is used for actual movement.
         /// </summary>
-        public float Angle { get; set; } = 0.0f; // In radians
+        public float Angle { get; set; } = 0f; // In radians
         public float AngleDegrees
         {
             get { return RadToDegNormalized(Angle); }
@@ -77,7 +73,7 @@ namespace Chambersite_K.GameObjects
         /// Differs from <see cref="Angle"/> as this property is used for image manipulation. Will sync
         /// with <see cref="Angle"/> is <see cref="SyncRotation"/> is set to <c>true</c>.
         /// </summary>
-        public float Rotation { get; set; } = 0.0f; // In radians
+        public float Rotation { get; set; } = 0f; // In radians
         public float RotationDegrees
         {
             get { return RadToDegNormalized(Rotation); }
@@ -89,9 +85,10 @@ namespace Chambersite_K.GameObjects
         public virtual bool SyncRotation { get; set; } = true;
         public virtual Vector2 Scale { get; set; } = Vector2.One;
 
+        public GameObjectPool ParentPool { get; set; }
         public object Parent { get; set; } = null;
         public IView ParentView { get; set; }
-        public List<GameObject> Children { get; set; } = new List<GameObject>();
+        public List<GameObject> Children { get; set; } = [];
 
         public virtual bool CheckCollision { get; set; } = true;
         public virtual bool CheckBound { get; set; } = true;
@@ -116,12 +113,15 @@ namespace Chambersite_K.GameObjects
             RenderOrder = (renderOrderAttr != null) ? renderOrderAttr.RenderOrder : -999_999_999;
         }
 
+        public GameObject(GameObject parent)
+            : this()
+        {
+            Parent = parent;
+        }
+
         ~GameObject()
         {
-            if (IsLocalToView)
-                try { ParentView.ObjectPool.ObjectPool.Remove(this); } catch (Exception) { }
-            else
-                try { GAME.ObjectPool.ObjectPool.Remove(this); } catch (Exception) { }
+            try { ParentPool.ObjectPool.Remove(this); } catch (Exception) { }
         }
 
         public override string ToString()
@@ -132,7 +132,8 @@ namespace Chambersite_K.GameObjects
         public virtual void Initialize()
         {
             try { ImageTexture = ParentView.FindResource<Texture2D>(Image); }
-            catch (KeyNotFoundException) { ImageTexture = null; } // The ImageTexture wasn't set properly. This is normal for some objects so ignore.
+            catch (KeyNotFoundException) { ImageTexture = null; Logger.Debug($"{this} ImageTexture null. This is considered normal behaviour."); }
+            // The ImageTexture wasn't set properly. This is normal for some objects (e.g: objects not meant to be rendered) so ignore.
         }
 
         public virtual void BeforeUpdate()
@@ -205,7 +206,7 @@ namespace Chambersite_K.GameObjects
         {
             float orientation = deg % 360;
             if (orientation < 0) orientation += 360;
-            orientation = orientation * (MathF.PI / 180.0f);
+            orientation *= MathF.PI / 180.0f;
             return orientation;
         }
 

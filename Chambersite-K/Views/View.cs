@@ -123,31 +123,18 @@ namespace Chambersite_K.Views
 
         /// <summary>
         /// Creates a <see cref="GameObject"/> and adds it as a Child of this <see cref="IView"/>.<br/>
-        /// If <paramref name="globalObject"/> is set to <c>true</c>, this object will not render.
+        /// If <paramref name="globalObject"/> is set to <c>true</c>, this object will not render and will be added to the global pool.
         /// </summary>
-        /// <typeparam name="T">The <see cref="GameObject"/> type to instanciate.</typeparam>
         /// <param name="globalObject">Is this meant to be a global object?</param>
-        /// <param name="image">Optional base image to render this object.</param>
-        /// <returns>The instanciated <typeparamref name="T"/> <see cref="GameObject"/>.</returns>
-        public GameObject CreateGameObject<T>(bool globalObject = false, string image = null)
+        /// <returns>The <paramref name="gameObject"/> instance.</returns>
+        public GameObject CreateGameObject(GameObject gameObject, bool globalObject = false)
         {
-            GameObject go;
-            if (globalObject)
-                go = AddGameObjectToList<T>(GAME.ObjectPool);
-            else
-                go = AddGameObjectToList<T>(ObjectPool);
-            AddChild(go);
-            return go;
+            AddGameObjectToList(gameObject, globalObject ? GAME.ObjectPool : ObjectPool);
+            AddChild(gameObject);
+            return gameObject;
         }
 
-        private GameObject AddGameObjectToList<T>(GameObjectPool pool)
-        {
-            GameObject go = pool.CreateGameObject<T>(this, this);
-            if (go.RenderOrder == -999_999_999)
-                go.RenderOrder = pool.GetAllObjectCount() - 1;
-            pool.ObjectPool.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
-            return go;
-        }
+        private GameObject AddGameObjectToList(GameObject gameObject, GameObjectPool pool) => pool.AddGameObject(gameObject, this, this);
 
         public void AddChild(GameObject child)
         {

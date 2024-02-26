@@ -29,7 +29,7 @@ namespace Chambersite_K.Views
         /// A list of <see cref="IView"/> to load after all resources were loaded.<br/>
         /// Usually the main menu and/or other views your game needs to work.
         /// </summary>
-        public virtual List<Type> ViewsToLoad { get; set; } = new List<Type>();
+        public List<IView> ViewsToLoad { get; protected set; } = [];
 
         public event ResourcesLoadedEventHandler ResourcesLoaded;
 
@@ -58,12 +58,8 @@ namespace Chambersite_K.Views
             if (AreResourceLoaded)
             {
                 Parent.LoadingScreen = null;
-                foreach (Type viewType in ViewsToLoad)
-                {
-                    MethodInfo method = GetType().GetMethod("AddView");
-                    MethodInfo genericMethod = method.MakeGenericMethod(viewType);
-                    genericMethod.Invoke(this, null);
-                }
+                foreach (IView view in ViewsToLoad)
+                    AddView(view);
             }
         }
 
@@ -72,10 +68,9 @@ namespace Chambersite_K.Views
             
         }
 
-        public void AddResourceLoader<GlobalResourceLoader>()
+        public void AddResourceLoader(GlobalResourceLoader resLoader)
         {
-            Graphics.GlobalResourceLoader loader = (Graphics.GlobalResourceLoader)Activator.CreateInstance(typeof(GlobalResourceLoader));
-            ResourceLoaders.Add(loader);
+            ResourceLoaders.Add(resLoader);
         }
 
         private async Task LoadContent()
@@ -92,9 +87,9 @@ namespace Chambersite_K.Views
             }
         }
 
-        public void AddView<T>()
+        public void AddView(IView view)
         {
-            GAME.ActiveViews.AddView<T>();
+            GAME.ActiveViews.AddView(view);
         }
 
         public List<IResource> GetGlobalResources() => Parent.ResourcePool;

@@ -21,7 +21,7 @@ namespace Chambersite_K.Views
         public bool Hidden { get; set; }
         public GameObjectPool ObjectPool { get; set; }
         public bool WasInitialized { get; }
-        public int RenderOrder { get; set; }
+        public int? RenderOrder { get; set; }
         public ViewBounds WorldBounds { get; set; }
     }
 }

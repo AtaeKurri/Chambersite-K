@@ -75,12 +75,12 @@ namespace Chambersite_K.Views
 
             GenerateGuid(ref view);
             Pool.Add(view);
-            if (view.RenderOrder == -999_999_999)
+            if (view.RenderOrder == null)
                 view.RenderOrder = Pool.Count - 1;
             if (Parent._IsInitialized)
                 view.Initialize();
 
-            Pool.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
+            Pool.Sort((x, y) => Comparer<int>.Default.Compare((int)x.RenderOrder, (int)y.RenderOrder));
             return view;
         }
 

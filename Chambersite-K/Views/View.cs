@@ -41,14 +41,14 @@ namespace Chambersite_K.Views
         public bool WasInitialized { get; private set; } = false;
         public long Timer { get; set; } = 0;
         public bool Hidden { get; set; } = false;
-        public int RenderOrder { get; set; } = -999_999_999;
+        public int? RenderOrder { get; set; } = null;
         public ViewBounds WorldBounds { get; set; } = new ViewBounds();
 
         /// <summary>
         /// Stores all the resources loaded from type view scope. Access it directly to render standalone images.<br/>
         /// See <see cref="ResourceExtensions.FindResource{T}(List{IResource}, string)"/> to find resources inside this List more easily.
         /// </summary>
-        public List<IResource> ResourcePool { get; set; } = new List<IResource>();
+        public List<IResource> ResourcePool { get; set; } = [];
         public GameObjectPool ObjectPool { get; set; }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Chambersite_K.Views
         /// </summary>
         public object Parent { get; set; } = GAME; // TODO: Allow for other view to be the parent (for nesting scenes.)
         public IView ParentView { get; set; }
-        public List<GameObject> Children { get; set; } = new List<GameObject>();
+        public List<GameObject> Children { get; set; } = [];
         public ICoroutineManager CoroutineManager { get; set; }
 
         public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -74,7 +74,7 @@ namespace Chambersite_K.Views
             InternalName = (viewNameAttr != null) ? viewNameAttr.InternalName : $"{GetType().Name}";
 
             RenderOrderAttribute renderOrderAttr = (RenderOrderAttribute)Attribute.GetCustomAttribute(GetType(), typeof(RenderOrderAttribute));
-            RenderOrder = (renderOrderAttr != null) ? renderOrderAttr.RenderOrder : -999_999_999;
+            RenderOrder = (renderOrderAttr != null) ? renderOrderAttr.RenderOrder : null;
         }
 
         ~View()

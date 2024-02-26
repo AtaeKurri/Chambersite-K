@@ -42,7 +42,7 @@ namespace Chambersite_K.GameObjects
         public GameObjectStatus Status { get; set; } = GameObjectStatus.Active;
         public virtual GameObjectGroup Group { get; set; } = GameObjectGroup.None;
         public long Timer { get; set; } = 0;
-        public int RenderOrder { get; set; } = -999_999_999;
+        public int? RenderOrder { get; set; } = null;
         public IShapeF Bounds { get; set; }
         public bool Hidden { get; set; } = false;
 
@@ -110,7 +110,7 @@ namespace Chambersite_K.GameObjects
             InternalName = (goNameAttr != null) ? goNameAttr.InternalName : $"{GetType().Name}";
 
             RenderOrderAttribute renderOrderAttr = (RenderOrderAttribute)Attribute.GetCustomAttribute(GetType(), typeof(RenderOrderAttribute));
-            RenderOrder = (renderOrderAttr != null) ? renderOrderAttr.RenderOrder : -999_999_999;
+            RenderOrder = (renderOrderAttr != null) ? renderOrderAttr.RenderOrder : null;
         }
 
         public GameObject(GameObject parent)

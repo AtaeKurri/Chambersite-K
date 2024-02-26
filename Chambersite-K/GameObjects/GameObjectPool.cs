@@ -82,9 +82,9 @@ namespace Chambersite_K.GameObjects
             gameObject.Initialize();
             CollisionChecker.Insert(gameObject);
 
-            if (gameObject.RenderOrder == -999_999_999)
+            if (gameObject.RenderOrder == null)
                 gameObject.RenderOrder = GetAllObjectCount() - 1;
-            ObjectPool.Sort((x, y) => x.RenderOrder.CompareTo(y.RenderOrder));
+            ObjectPool.Sort((x, y) => Comparer<int>.Default.Compare((int)x.RenderOrder, (int)y.RenderOrder));
             return gameObject;
         }
 

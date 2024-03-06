@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chambersite_K.GameObjects.Coroutines
+namespace Chambersite_K.Interfaces
 {
     public interface ICoroutineConsumer
     {

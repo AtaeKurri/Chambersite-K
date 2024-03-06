@@ -1,9 +1,11 @@
 ﻿using Assimp;
+using Chambersite_K.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using NLog;
+using NLog.Fluent;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -199,6 +201,17 @@ namespace Chambersite_K.Graphics
         // TODO: Implémenter un check pour savoir si une resource du même nom (et type) existe, si oui, throw une Exception.
         public static Resource<T> LoadResource<T>(this IResourceHolder resourcePool, string resourceName, string filePath)
         {
+            // Check for an already existing resource of the same name.
+            bool resourceAlreadyExists = false;
+            try
+            {
+                if (resourcePool.FindResource<T>(resourceName) != null)
+                    resourceAlreadyExists = true;
+            }
+            catch (KeyNotFoundException) { }
+            if (resourceAlreadyExists)
+                throw new ResourceException($"A resource with the same name and/or type already exists: {resourceName} ({typeof(T)})");
+
             Resource<T> resource;
             filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
             if (!File.Exists(filePath))

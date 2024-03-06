@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Chambersite_K.GameObjects.Coroutines;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chambersite_K.GameObjects.Coroutines
+namespace Chambersite_K.Interfaces
 {
     public interface ICoroutineManager
     {

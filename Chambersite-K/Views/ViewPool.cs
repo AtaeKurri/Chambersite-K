@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 
 namespace Chambersite_K.Views
 {
-    public sealed class ViewPool(MainProcess parentProcess) : IEnumerable<IView>
+    public sealed class ViewPool(MainProcess parentProcess) : IEnumerable<View>
     {
         public MainProcess Parent { get; set; } = parentProcess;
-        public List<IView> Pool { get; set; } = new List<IView>();
-        private HashSet<Guid> UsedGuids = new HashSet<Guid>();
+        public List<View> Pool { get; set; } = [];
+        private HashSet<Guid> UsedGuids = [];
 
         public void BeforeUpdate()
         {
-            foreach (IView view in Pool)
+            foreach (View view in Pool)
             {
                 if (!view.WasInitialized && Parent.LoadingScreen == null)
                     view.Initialize();
@@ -28,7 +28,7 @@ namespace Chambersite_K.Views
 
         public void Update()
         {
-            foreach (IView view in Pool)
+            foreach (View view in Pool)
             {
                 if (view.IsValid() && view.ViewStatus != ViewStatus.Paused) view.Update();
             }
@@ -36,7 +36,7 @@ namespace Chambersite_K.Views
 
         public void AfterUpdate()
         {
-            foreach (IView view in Pool)
+            foreach (View view in Pool)
             {
                 if (view.IsValid() && view.ViewStatus != ViewStatus.Paused) view.AfterUpdate();
             }
@@ -52,19 +52,19 @@ namespace Chambersite_K.Views
             ViewType[] types = (ViewType[])Enum.GetValues(typeof(ViewType));
             foreach (ViewType type in types)
             {
-                foreach (IView view in Pool.FindAll(x => x.ViewType == type))
+                foreach (View view in Pool.FindAll(x => x.ViewType == type))
                     if (view.IsValid() && !view.Hidden) view.Draw();
             }
         }
 
         /// <summary>
         /// Create and adds a view to the active view pool.<br/>
-        /// Will only call <see cref="IView.Init"/> is the game is properly Initialized.
+        /// Will only call <see cref="View.Init"/> is the game is properly Initialized.
         /// </summary>
         /// <param name="view"></param>
         /// <returns>The view instance.</returns>
         /// <exception cref="InvalidViewOperationException">Will be thrown if another stage already exists or if you try to add a Loading Screen.</exception>
-        public IView AddView(IView view)
+        public View AddView(View view)
         {
             if (view == null)
                 throw new ApplicationException($"The View with a type of {view.GetType().Name} couldn't be created.");
@@ -84,7 +84,7 @@ namespace Chambersite_K.Views
             return view;
         }
 
-        private void GenerateGuid(ref IView v)
+        private void GenerateGuid(ref View v)
         {
             Guid uuid = Guid.NewGuid();
             while (UsedGuids.Contains(uuid))
@@ -97,10 +97,10 @@ namespace Chambersite_K.Views
         /// <summary>
         /// Attepts to create a new Stage and delete the existing one. Will fail if the view type provided is not of <see cref="ViewType.Stage"/>.
         /// </summary>
-        /// <param name="view">An instance of <see cref="IView"/> of type <see cref="ViewType.Stage"/></param>
+        /// <param name="view">An instance of <see cref="View"/> of type <see cref="ViewType.Stage"/></param>
         /// <returns>The instance of the stage.</returns>
         /// <exception cref="InvalidViewOperationException">Will be thrown if the view type is not a Stage View.</exception>
-        public IView SwitchToStage(IView view)
+        public View SwitchToStage(View view)
         {
             if (view.ViewType != ViewType.Stage)
                 throw new InvalidViewOperationException("You cannot switch to a non-stage view.");
@@ -112,7 +112,7 @@ namespace Chambersite_K.Views
             return view;
         }
 
-        public IEnumerator<IView> GetEnumerator()
+        public IEnumerator<View> GetEnumerator()
         {
             return Pool.GetEnumerator();
         }

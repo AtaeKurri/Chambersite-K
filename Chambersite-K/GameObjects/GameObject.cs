@@ -1,5 +1,6 @@
 ﻿using Chambersite_K.GameObjects.Coroutines;
 using Chambersite_K.Graphics;
+using Chambersite_K.Interfaces;
 using Chambersite_K.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -87,7 +88,7 @@ namespace Chambersite_K.GameObjects
 
         public GameObjectPool ParentPool { get; set; }
         public object Parent { get; set; } = null;
-        public IView ParentView { get; set; }
+        public View ParentView { get; set; }
         public List<GameObject> Children { get; set; } = [];
 
         public virtual bool CheckCollision { get; set; } = true;

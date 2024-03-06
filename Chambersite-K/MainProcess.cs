@@ -3,12 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using Chambersite_K.Views;
-using Chambersite_K.Graphics;
 using Chambersite_K.GameObjects;
 using ImGuiNET;
 using Chambersite_K.ImGUI;
 using Chambersite_K.GameSettings;
 using CommandLine;
+using Chambersite_K.Interfaces;
 
 namespace Chambersite_K
 {
@@ -25,9 +25,9 @@ namespace Chambersite_K
 
         #region Resources and Objects
 
-        public static Settings Settings { get; set; } = new Settings();
+        public static Settings Settings { get; set; } = new();
 
-        public List<IResource> ResourcePool { get; set; } = new List<IResource>();
+        public List<IResource> ResourcePool { get; set; } = [];
         public GameObjectPool ObjectPool { get; set; }
         internal LoadingScreen? LoadingScreen { get; set; }
         internal ViewPool ActiveViews { get; set; }
@@ -44,8 +44,8 @@ namespace Chambersite_K
         /// Change this this to determine which key toggles the ImGUI display.
         /// </summary>
         public Keys ToggleImGUI = Keys.F3;
-        private GUIViewAndObjectList GUI_ViewAndObjectList = new GUIViewAndObjectList();
-        private GUIFrameStats GUI_FrameStats = new GUIFrameStats();
+        private GUIViewAndObjectList GUI_ViewAndObjectList = new();
+        private GUIFrameStats GUI_FrameStats = new();
 
         #endregion
 
@@ -173,13 +173,13 @@ namespace Chambersite_K
         #region Views and GameObjects
 
         /// <summary>
-        /// Adds an instance of <see cref="IView"/> to the active view pool.<br/>
-        /// Will only call <see cref="IView.Init"/> is the game is properly Initialized.
+        /// Adds an instance of <see cref="View"/> to the active view pool.<br/>
+        /// Will only call <see cref="View.Init"/> is the game is properly Initialized.
         /// </summary>
-        /// <param name="view">An instance of <see cref="IView"/>.</param>
+        /// <param name="view">An instance of <see cref="View"/>.</param>
         /// <returns>The same instance of <paramref name="view"/>.</returns>
         /// <exception cref="InvalidViewOperationException">Will be thrown if another stage already exists.</exception>
-        public IView AddView(IView view) => ActiveViews.AddView(view);
+        public View AddView(View view) => ActiveViews.AddView(view);
 
         /// <summary>
         /// Create a new loading screen and inits it.

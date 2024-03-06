@@ -1,4 +1,5 @@
 ﻿using Chambersite_K;
+using Chambersite_K.Interfaces;
 using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;

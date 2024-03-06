@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chambersite_K.Graphics
+namespace Chambersite_K.Interfaces
 {
     public interface IResource
     {

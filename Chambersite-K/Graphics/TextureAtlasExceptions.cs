@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Chambersite_K.Graphics
 {
-    public class TextureAtlasBoundsException : Exception
+    public class TextureAtlasBoundsException : ResourceException
     {
         public TextureAtlasBoundsException() { }
         public TextureAtlasBoundsException(string message) : base(message) { }

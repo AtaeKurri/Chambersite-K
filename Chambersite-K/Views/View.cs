@@ -1,6 +1,7 @@
 ﻿using Chambersite_K.GameObjects;
 using Chambersite_K.GameObjects.Coroutines;
 using Chambersite_K.Graphics;
+using Chambersite_K.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -27,7 +28,7 @@ namespace Chambersite_K.Views
         Paused
     }
 
-    public abstract class View : IView
+    public abstract class View : IParentable, IResourceHolder, ICoroutineConsumer, IGameCycle
     {
         public string InternalName { get; set; }
 
@@ -55,7 +56,7 @@ namespace Chambersite_K.Views
         /// The Parent of a View is always the instanced <see cref="MainProcess"/> object.
         /// </summary>
         public object Parent { get; set; } = GAME; // TODO: Allow for other view to be the parent (for nesting scenes.)
-        public IView ParentView { get; set; }
+        public View ParentView { get; set; }
         public List<GameObject> Children { get; set; } = [];
         public ICoroutineManager CoroutineManager { get; set; }
 
@@ -122,7 +123,7 @@ namespace Chambersite_K.Views
         public List<IResource> GetGlobalResources() => GAME.ResourcePool;
 
         /// <summary>
-        /// Creates a <see cref="GameObject"/> and adds it as a Child of this <see cref="IView"/>.<br/>
+        /// Creates a <see cref="GameObject"/> and adds it as a Child of this <see cref="View"/>.<br/>
         /// If <paramref name="globalObject"/> is set to <c>true</c>, this object will not render and will be added to the global pool.
         /// </summary>
         /// <param name="globalObject">Is this meant to be a global object?</param>

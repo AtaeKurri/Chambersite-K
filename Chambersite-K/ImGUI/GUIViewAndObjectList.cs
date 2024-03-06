@@ -1,6 +1,7 @@
 ﻿using Assimp.Unmanaged;
 using Chambersite_K.GameObjects;
 using Chambersite_K.Graphics;
+using Chambersite_K.Interfaces;
 using Chambersite_K.Views;
 using Chambersite_K.World;
 using ImGuiNET;
@@ -28,7 +29,7 @@ namespace Chambersite_K.ImGUI
                 {
                     if (ImGui.BeginTabItem("Views"))
                     {
-                        foreach (IView view in GAME.ActiveViews)
+                        foreach (View view in GAME.ActiveViews)
                         {
                             if (ImGui.CollapsingHeader(view.ToString()))
                             {
@@ -41,7 +42,7 @@ namespace Chambersite_K.ImGUI
                     {
                         List<Tuple<string, GameObjectPool>> goHolders = new List<Tuple<string, GameObjectPool>>
                     { new Tuple<string, GameObjectPool>("Global GameObjects", GAME.ObjectPool) };
-                        foreach (IView view in GAME.ActiveViews)
+                        foreach (View view in GAME.ActiveViews)
                             goHolders.Add(new Tuple<string, GameObjectPool>(view.ToString(), view.ObjectPool));
 
                         foreach (Tuple<string, GameObjectPool> container in goHolders)
@@ -57,7 +58,7 @@ namespace Chambersite_K.ImGUI
                     {
                         List<Tuple<string, List<IResource>>> resourceHolders = new List<Tuple<string, List<IResource>>>
                     { new Tuple<string, List<IResource>>("Global Pool", GAME.ResourcePool) };
-                        foreach (IView view in GAME.ActiveViews)
+                        foreach (View view in GAME.ActiveViews)
                             resourceHolders.Add(new Tuple<string, List<IResource>>(view.ToString(), view.ResourcePool));
 
                         foreach (Tuple<string, List<IResource>> container in resourceHolders)
@@ -75,7 +76,7 @@ namespace Chambersite_K.ImGUI
             }
         }
 
-        private void DisplayView(IView view)
+        private void DisplayView(View view)
         {
             ImGui.Text($"Type: {view.GetType().Name}");
             ImGui.Text($"View Type: {view.ViewType}");

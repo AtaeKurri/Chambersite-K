@@ -1,5 +1,5 @@
-﻿using Chambersite_K.GameObjects;
-using Chambersite_K.Graphics;
+﻿using Chambersite_K.Graphics;
+using Chambersite_K.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -20,16 +20,16 @@ namespace Chambersite_K.Views
     {
         public MainProcess Parent { get; set; }
         public long Timer { get; set; }
-        public List<GlobalResourceLoader> ResourceLoaders { get; set; } = new List<GlobalResourceLoader>();
+        public List<GlobalResourceLoader> ResourceLoaders { get; set; } = [];
         public bool AreResourceLoaded { get; set; } = false;
-        public List<IResource> ResourcePool { get; set; } = new List<IResource>();
+        public List<IResource> ResourcePool { get; set; } = [];
         public int TotalResourcesLoadedNum { get; set; } = 0;
 
         /// <summary>
-        /// A list of <see cref="IView"/> to load after all resources were loaded.<br/>
+        /// A list of <see cref="View"/> to load after all resources were loaded.<br/>
         /// Usually the main menu and/or other views your game needs to work.
         /// </summary>
-        public List<IView> ViewsToLoad { get; protected set; } = [];
+        public List<View> ViewsToLoad { get; protected set; } = [];
 
         public event ResourcesLoadedEventHandler ResourcesLoaded;
 
@@ -58,7 +58,7 @@ namespace Chambersite_K.Views
             if (AreResourceLoaded)
             {
                 Parent.LoadingScreen = null;
-                foreach (IView view in ViewsToLoad)
+                foreach (View view in ViewsToLoad)
                     AddView(view);
             }
         }
@@ -87,7 +87,7 @@ namespace Chambersite_K.Views
             }
         }
 
-        public void AddView(IView view)
+        public void AddView(View view)
         {
             GAME.ActiveViews.AddView(view);
         }

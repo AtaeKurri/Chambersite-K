@@ -7,17 +7,12 @@ using System.Threading.Tasks;
 namespace Chambersite_K.Views
 {
     /// <summary>
-    /// Allows to set a defined render order to any <see cref="IView"/> and <see cref="GameObjects"/>.<br/>
+    /// Allows to set a defined render order to any <see cref="View"/> and <see cref="GameObjects"/>.<br/>
     /// By default, the render order will be the order the Views/GameObjects are created.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class RenderOrderAttribute : Attribute
+    public class RenderOrderAttribute(int renderOrder) : Attribute
     {
-        public readonly int RenderOrder;
-
-        public RenderOrderAttribute(int renderOrder)
-        {
-            this.RenderOrder = renderOrder;
-        }
+        public readonly int RenderOrder = renderOrder;
     }
 }

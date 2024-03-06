@@ -1,4 +1,5 @@
-﻿using Chambersite_K.Views;
+﻿using Chambersite_K.Interfaces;
+using Chambersite_K.Views;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.Collisions;
@@ -29,7 +30,7 @@ namespace Chambersite_K.GameObjects
             ));
         }
 
-        public GameObjectPool(IView parent)
+        public GameObjectPool(View parent)
         {
             Parent = parent;
             CollisionChecker = new CollisionComponent(parent.WorldBounds.ToRectangleF());
@@ -72,7 +73,7 @@ namespace Chambersite_K.GameObjects
             }
         }
 
-        public GameObject AddGameObject(GameObject gameObject, IParentable parent, IView parentView)
+        public GameObject AddGameObject(GameObject gameObject, IParentable parent, View parentView)
         {
             GenerateGuid(ref gameObject);
             gameObject.ParentPool = this;
